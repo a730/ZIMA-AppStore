@@ -25,9 +25,7 @@ services:
             en_us: PostgreSQL data directory
 
   backend:
-    build:
-      context: https://github.com/jpalmae/hermeshq.git#main
-      dockerfile: backend/Dockerfile
+    image: ghcr.io/a730/zima-appstore-backend:latest
     container_name: hermeshq-backend
     depends_on:
       postgres:
@@ -78,11 +76,7 @@ services:
             en_us: Agent workspaces and data
 
   frontend:
-    build:
-      context: https://github.com/jpalmae/hermeshq.git#main
-      dockerfile: frontend/Dockerfile
-      args:
-        VITE_API_BASE_URL: ""
+    image: ghcr.io/a730/zima-appstore-frontend:latest
     container_name: hermeshq-frontend
     depends_on:
       - backend
