@@ -1,0 +1,77 @@
+version: "3.7"
+name: blinko
+services:
+  blinko-website:
+    container_name: blinko-website
+    image: blinkospace/blinko:latest
+    ports:
+      - "1111:1111"
+    labels:
+      - "casaos.port=1111"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    environment:
+      NODE_ENV: production
+      NEXTAUTH_URL: http://localhost:1111
+      NEXT_PUBLIC_BASE_URL: http://localhost:1111
+      NEXTAUTH_SECRET: replace-me-with-a-secure-secret
+      DATABASE_URL: postgresql://postgres:blinko_pass@postgres:5432/blinko
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:1111/"]
+      interval: 30s 
+      timeout: 10s  
+      retries: 5
+      start_period: 30s
+    network_mode: bridge
+    restart: unless-stopped
+    x-casaos:
+      envs:
+        - container: NEXTAUTH_SECRET
+          description:
+            en_us: Secret for NextAuth session encryption
+        - container: NEXT_PUBLIC_BASE_URL
+          description:
+            en_us: Publicly accessible base URL for the app
+
+  postgres:
+    container_name: blinko-postgres
+    image: postgres:14
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: blinko
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: blinko_pass
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "blinko"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - /DATA/AppData/blinko/postgres:/var/lib/postgresql/data
+    x-casaos:
+      volumes:
+        - container: /var/lib/postgresql/data
+          description:
+            en_us: PostgreSQL data directory
+
+x-casaos:
+  architectures:
+    - amd64
+  main: blinko-website
+  description:
+    en_us: Blinko is an open-source, self-hosted personal AI note tool prioritizing privacy, designed for quickly capturing and organizing fleeting thoughts.
+  tagline:
+    en_us: AI-powered personal AI note tool
+  developer: blinkospace
+  author: Zima
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/blinko/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/blinko/logo.png
+  title:
+    en_us: Blinko
+  category: Productivity
+  port_map: "1111"
+  scheme: http
+  index: /

@@ -18,5 +18,10 @@
     "name": "HermesHQ",
     "font": "hermeshq",
     "description": "Agent Platforms"
+  },
+  {
+    "name": "Blinko",
+    "font": "blinko",
+    "description": "Productivity"
   }
 ]
