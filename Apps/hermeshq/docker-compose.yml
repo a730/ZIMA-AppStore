@@ -105,8 +105,8 @@ x-casaos:
     en_us: Control plane for Hermes Agent instances
   developer: jpalmae
   author: JustSerdar
-  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/hermeshq/logo.png
-  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/hermeshq/logo.png
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/hermeshq/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/hermeshq/logo.png
   title:
     en_us: HermesHQ
   category: Agent Platforms
