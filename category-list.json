@@ -13,5 +13,10 @@
     "name": "CNCjs",
     "font": "cncjs",
     "description": "CNCjs"
+  },
+  {
+    "name": "HermesHQ",
+    "font": "hermeshq",
+    "description": "Agent Platforms"
   }
 ]
