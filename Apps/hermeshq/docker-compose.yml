@@ -2,12 +2,19 @@ version: "3.7"
 name: hermeshq
 services:
   backend:
+    container_name: hermeshq-backend
     image: jpalmae/hermeshq-backend:latest
     restart: unless-stopped
+    volumes:
+      - /DATA/AppData/hermeshq/backend:/app/data
     x-casaos:
-      volumes: []
+      volumes:
+        - container: /app/data
+          description:
+            en_us: Backend data storage
 
   frontend:
+    container_name: hermeshq-frontend
     image: jpalmae/hermeshq-frontend:latest
     ports:
       - "3420:80"
@@ -27,12 +34,18 @@ services:
       volumes: []
 
   postgres:
+    container_name: hermeshq-db
     image: postgres:15
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: password
+    volumes:
+      - /DATA/AppData/hermeshq/db:/var/lib/postgresql/data
     x-casaos:
-      volumes: []
+      volumes:
+        - container: /var/lib/postgresql/data
+          description:
+            en_us: Postgres database storage
 
 x-casaos:
   architectures:
