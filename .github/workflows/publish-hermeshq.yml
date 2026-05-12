@@ -35,7 +35,7 @@ jobs:
           context: https://github.com/jpalmae/hermeshq.git#main
           file: backend/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:latest
+          tags: ghcr.io/a730/zima-appstore-backend:latest
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
@@ -44,4 +44,4 @@ jobs:
           file: frontend/Dockerfile
           build-args: VITE_API_BASE_URL=
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:latest
+          tags: ghcr.io/a730/zima-appstore-frontend:latest
