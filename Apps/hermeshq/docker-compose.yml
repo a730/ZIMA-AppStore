@@ -113,6 +113,12 @@ x-casaos:
   port_map: "3420"
   scheme: http
   index: /
+  screenshots:
+    - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/hermeshq/screenshot-1.png
+    - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/hermeshq/screenshot-2.png
+    - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/hermeshq/screenshot-3.png
+    - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/hermeshq/screenshot-4.png
+    - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/hermeshq/screenshot-5.png
   tips:
     before_install:
       en_us: |
