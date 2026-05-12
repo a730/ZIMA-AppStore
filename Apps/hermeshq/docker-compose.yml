@@ -40,7 +40,7 @@ services:
       WORKSPACES_ROOT: /app/workspaces
       BRANDING_ROOT: /app/workspaces/_branding
       PTY_SHELL: /bin/sh
-      CORS_ORIGINS: '["http://localhost:3420","http://frontend"]'
+      CORS_ORIGINS: ["http://localhost:3420","http://frontend"]
     volumes:
       - /DATA/AppData/HermesHQ/workspaces:/app/workspaces
     extra_hosts:
