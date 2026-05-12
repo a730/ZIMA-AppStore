@@ -4,5 +4,11 @@
         "editor": "Hum+",
         "date": "1640830720",
         "reason": "Self-host PaaS"
+    },
+    {
+        "name": "hermeshq",
+        "editor": "jpalmae",
+        "date": "1715341200",
+        "reason": "Advanced AI Agent Control Plane"
     }
 ]
