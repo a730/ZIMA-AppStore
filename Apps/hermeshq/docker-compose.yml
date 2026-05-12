@@ -25,7 +25,7 @@ services:
             en_us: PostgreSQL data directory
 
   backend:
-    image: ghcr.io/a730/zima-appstore-backend:latest
+    image: ghcr.io/a730/hermeshq-backend:latest
     container_name: hermeshq-backend
     depends_on:
       postgres:
@@ -76,7 +76,7 @@ services:
             en_us: Agent workspaces and data
 
   frontend:
-    image: ghcr.io/a730/zima-appstore-frontend:latest
+    image: ghcr.io/a730/hermeshq-frontend:latest
     container_name: hermeshq-frontend
     depends_on:
       - backend
