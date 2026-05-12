@@ -1,0 +1,49 @@
+version: "3.7"
+name: vllm
+services:
+  vllm:
+    container_name: vllm
+    image: vllm/vllm-openai
+    ports:
+      - "8000:8000"
+    labels:
+      - "casaos.port=8000"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+                - gpu
+              driver: nvidia
+              count: -1
+    network_mode: bridge
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+x-casaos:
+  architectures:
+    - amd64
+  main: vllm
+  description:
+    en_us: vLLM is a high-throughput and memory-efficient serving engine for LLMs.
+  tagline:
+    en_us: High-throughput LLM serving
+  developer: vllm
+  author: Zima
+  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/vllm/logo.png
+  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/vllm/logo.png
+  title:
+    en_us: vLLM
+  category: Generative AI
+  port_map: "8000"
+  scheme: http
+  index: /

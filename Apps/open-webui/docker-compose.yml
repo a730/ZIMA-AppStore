@@ -1,0 +1,42 @@
+version: "3.7"
+name: open-webui
+services:
+  open-webui:
+    container_name: open-webui
+    image: ghcr.io/open-webui/open-webui:main
+    ports:
+      - "3000:8080"
+    labels:
+      - "casaos.port=3000"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    network_mode: bridge
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: open-webui
+  description:
+    en_us: Open WebUI is an extensible, community-driven web interface for LLMs.
+  tagline:
+    en_us: Interface for your local LLMs
+  developer: open-webui
+  author: Zima
+  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/open-webui/logo.png
+  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/open-webui/logo.png
+  title:
+    en_us: Open WebUI
+  category: Generative AI
+  port_map: "3000"
+  scheme: http
+  index: /

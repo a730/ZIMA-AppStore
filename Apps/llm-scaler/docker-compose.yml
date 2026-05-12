@@ -1,0 +1,49 @@
+version: "3.7"
+name: llm-scaler
+services:
+  llm-scaler:
+    container_name: llm-scaler
+    image: intel/llm-scaler-vllm
+    ports:
+      - "8001:8001"
+    labels:
+      - "casaos.port=8001"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+                - gpu
+              driver: xpu
+              count: -1
+    network_mode: bridge
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+x-casaos:
+  architectures:
+    - amd64
+  main: llm-scaler
+  description:
+    en_us: LLM Scaler optimized for Intel Arc GPUs for efficient LLM inference.
+  tagline:
+    en_us: Intel Arc optimized LLM scaling
+  developer: intel
+  author: Zima
+  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/llm-scaler/logo.png
+  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/llm-scaler/logo.png
+  title:
+    en_us: LLM Scaler
+  category: Generative AI
+  port_map: "8001"
+  scheme: http
+  index: /

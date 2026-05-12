@@ -1,0 +1,42 @@
+version: "3.7"
+name: open-terminal
+services:
+  open-terminal:
+    container_name: open-terminal
+    image: ghcr.io/open-webui/open-terminal
+    ports:
+      - "4000:8080"
+    labels:
+      - "casaos.port=4000"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    network_mode: bridge
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: open-terminal
+  description:
+    en_us: Open Terminal provides a secure and accessible terminal via web interface.
+  tagline:
+    en_us: Secure web-based terminal
+  developer: open-webui
+  author: Zima
+  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/open-terminal/logo.png
+  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/open-terminal/logo.png
+  title:
+    en_us: Open Terminal
+  category: Utilities
+  port_map: "4000"
+  scheme: http
+  index: /

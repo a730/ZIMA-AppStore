@@ -1,0 +1,54 @@
+version: "3.7"
+name: hermeshq
+services:
+  backend:
+    image: jpalmae/hermeshq-backend:latest
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+  frontend:
+    image: jpalmae/hermeshq-frontend:latest
+    ports:
+      - "3420:80"
+    labels:
+      - "casaos.port=3420"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    network_mode: bridge
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+  postgres:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: password
+    x-casaos:
+      volumes: []
+
+x-casaos:
+  architectures:
+    - amd64
+  main: frontend
+  description:
+    en_us: HermesHQ is a specialized AI management platform.
+  tagline:
+    en_us: AI management platform
+  developer: jpalmae
+  author: Zima
+  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/hermeshq/logo.png
+  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/hermeshq/logo.png
+  title:
+    en_us: HermesHQ
+  category: Generative AI
+  port_map: "3420"
+  scheme: http
+  index: /

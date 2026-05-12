@@ -1,0 +1,56 @@
+version: "3.7"
+name: romm
+services:
+  romm:
+    container_name: romm
+    image: rommapp/romm:latest
+    ports:
+      - "8080:8080"
+    labels:
+      - "casaos.port=8080"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    network_mode: bridge
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+  db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: romm
+    x-casaos:
+      volumes: []
+
+  cache:
+    image: valkey/valkey:latest
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+x-casaos:
+  architectures:
+    - amd64
+  main: romm
+  description:
+    en_us: RomM is a self-hosted ROM manager for game enthusiasts.
+  tagline:
+    en_us: Beautiful ROM manager
+  developer: romm
+  author: Zima
+  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/romm/logo.png
+  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/romm/logo.png
+  title:
+    en_us: RomM
+  category: Games
+  port_map: "8080"
+  scheme: http
+  index: /

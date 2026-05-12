@@ -1,0 +1,49 @@
+version: "3.7"
+name: unsloth-studio
+services:
+  unsloth-studio:
+    container_name: unsloth-studio
+    image: unsloth/studio
+    ports:
+      - "8888:8888"
+    labels:
+      - "casaos.port=8888"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+                - gpu
+              driver: nvidia
+              count: -1
+    network_mode: bridge
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+x-casaos:
+  architectures:
+    - amd64
+  main: unsloth-studio
+  description:
+    en_us: Unsloth Studio provides a comprehensive environment for fine-tuning and deploying LLMs with extreme efficiency.
+  tagline:
+    en_us: Efficient LLM fine-tuning and deployment
+  developer: unsloth
+  author: Zima
+  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/unsloth-studio/logo.png
+  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/unsloth-studio/logo.png
+  title:
+    en_us: Unsloth Studio
+  category: Generative AI
+  port_map: "8888"
+  scheme: http
+  index: /

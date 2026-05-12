@@ -1,0 +1,41 @@
+version: "3.7"
+name: onedev
+services:
+  onedev:
+    container_name: onedev
+    image: 1dev/onedev
+    ports:
+      - "6610:6610"
+    labels:
+      - "casaos.port=6610"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6610/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    network_mode: bridge
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+x-casaos:
+  architectures:
+    - amd64
+  main: onedev
+  description:
+    en_us: OneDev is a lightweight and powerful all-in-one DevOps platform.
+  tagline:
+    en_us: All-in-one DevOps platform
+  developer: onedev
+  author: Zima
+  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/onedev/logo.png
+  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/onedev/logo.png
+  title:
+    en_us: OneDev
+  category: Development
+  port_map: "6610"
+  scheme: http
+  index: /
