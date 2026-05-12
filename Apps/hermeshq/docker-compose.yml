@@ -1,67 +1,127 @@
 version: "3.7"
 name: hermeshq
 services:
-  backend:
-    container_name: hermeshq-backend
-    image: jpalmae/hermeshq-backend:latest
-    restart: unless-stopped
-    volumes:
-      - /DATA/AppData/hermeshq/backend:/app/data
-    x-casaos:
-      volumes:
-        - container: /app/data
-          description:
-            en_us: Backend data storage
-
-  frontend:
-    container_name: hermeshq-frontend
-    image: jpalmae/hermeshq-frontend:latest
-    ports:
-      - "3420:80"
-    labels:
-      - "casaos.port=3420"
-      - "casaos.protocol=http"
-      - "casaos.entrypoint=/"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    network_mode: bridge
-    restart: unless-stopped
-    x-casaos:
-      volumes: []
-
   postgres:
-    container_name: hermeshq-db
-    image: postgres:15
-    restart: unless-stopped
+    container_name: hermeshq-postgres
+    image: postgres:16
     environment:
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hermeshq
+      POSTGRES_USER: hermeshq
+      POSTGRES_PASSWORD: hermeshq
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hermeshq -d hermeshq"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
     volumes:
-      - /DATA/AppData/hermeshq/db:/var/lib/postgresql/data
+      - /DATA/AppData/HermesHQ/postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - hermeshq-internal
     x-casaos:
       volumes:
         - container: /var/lib/postgresql/data
           description:
-            en_us: Postgres database storage
+            en_us: PostgreSQL data directory
+
+  backend:
+    build:
+      context: https://github.com/jpalmae/hermeshq.git#main
+      dockerfile: backend/Dockerfile
+    container_name: hermeshq-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://hermeshq:hermeshq@postgres:5432/hermeshq
+      JWT_SECRET: change-me-to-a-random-secret
+      AUTH_MODE: local
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: admin123
+      ADMIN_DISPLAY_NAME: Hermes Operator
+      WORKSPACES_ROOT: /app/workspaces
+      BRANDING_ROOT: /app/workspaces/_branding
+      PTY_SHELL: /bin/sh
+      CORS_ORIGINS: '["http://localhost:3420","http://frontend"]'
+    volumes:
+      - /DATA/AppData/HermesHQ/workspaces:/app/workspaces
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
+    networks:
+      - hermeshq-internal
+      - default
+    x-casaos:
+      envs:
+        - container: JWT_SECRET
+          description:
+            en_us: Secret key for JWT token generation
+        - container: ADMIN_USERNAME
+          description:
+            en_us: Admin username for first login
+        - container: ADMIN_PASSWORD
+          description:
+            en_us: Admin password for first login
+        - container: AUTH_MODE
+          description:
+            en_us: Authentication mode (local or oidc)
+      volumes:
+        - container: /app/workspaces
+          description:
+            en_us: Agent workspaces and data
+
+  frontend:
+    build:
+      context: https://github.com/jpalmae/hermeshq.git#main
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_BASE_URL: ""
+    container_name: hermeshq-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3420:80"
+    restart: unless-stopped
+    networks:
+      - default
+    x-casaos:
+      envs:
+        - container: VITE_API_BASE_URL
+          description:
+            en_us: API base URL for frontend (leave empty for auto-detect)
+
+networks:
+  hermeshq-internal:
+    internal: true
 
 x-casaos:
   architectures:
     - amd64
   main: frontend
   description:
-    en_us: HermesHQ is a specialized AI management platform.
+    en_us: HermesHQ is a Docker-first control plane for running and operating multiple Hermes Agent instances from one web application. Features include web UI, RBAC, task dispatch, schedules, inter-agent communication, and enterprise MCP access.
   tagline:
-    en_us: AI management platform
+    en_us: Control plane for Hermes Agent instances
   developer: jpalmae
-  author: Zima
+  author: JustSerdar
   icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/hermeshq/logo.png
   thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/hermeshq/logo.png
   title:
     en_us: HermesHQ
-  category: Generative AI
+  category: Agent Platforms
   port_map: "3420"
   scheme: http
   index: /
+  tips:
+    before_install:
+      en_us: |
+        HermesHQ must be built from source. First deployment will take several minutes.
+        Login with admin / admin123 after installation.
+        Change JWT_SECRET and ADMIN_PASSWORD via environment variables before first use.
