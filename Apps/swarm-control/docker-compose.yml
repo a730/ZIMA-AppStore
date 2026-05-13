@@ -30,6 +30,8 @@ services:
       SWARMCLAW_API_KEY: '${SWARMCLAW_API_KEY:-auto}'
       GATEWAY_BRIDGE_PORT: '18789'
       AGENT_SYNC_INTERVAL_MS: '5000'
+      MISSION_CONTROL_URL: 'http://swarmcontrol:3000'
+      MISSION_CONTROL_API_KEY: '${MC_API_KEY:-swarmcontrol-api-key}'
     depends_on:
       swarmclaw:
         condition: service_healthy

@@ -5,6 +5,8 @@ const SWARMCLAW_API_URL = (process.env.SWARMCLAW_API_URL || 'http://localhost:34
 const SWARMCLAW_API_KEY = process.env.SWARMCLAW_API_KEY || ''
 const PORT = Number(process.env.GATEWAY_BRIDGE_PORT || '18789')
 const SYNC_INTERVAL = Number(process.env.AGENT_SYNC_INTERVAL_MS || '5000')
+const MC_URL = (process.env.MISSION_CONTROL_URL || 'http://localhost:3000').replace(/\/+$/, '')
+const MC_API_KEY = process.env.MISSION_CONTROL_API_KEY || ''
 
 let seqCounter = 0
 const clients = new Map()
@@ -111,7 +113,57 @@ async function syncAgents() {
       }
     }
   } catch (err) {
-    if (err.name !== 'AbortError') emitLog('error', `Sync failed: ${err.message}`)
+    if (err.name !== 'AbortError') emitLog('error', `SwarmClaw sync failed: ${err.message}`)
+  }
+}
+
+let mcGatewayId = null
+
+async function mcFetch(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json' }
+  if (MC_API_KEY) headers['x-api-key'] = MC_API_KEY
+  const res = await fetch(`${MC_URL}${path}`, { ...options, headers, signal: AbortSignal.timeout(10000) })
+  if (!res.ok) throw new Error(`Mission Control ${res.status}`)
+  return res.json()
+}
+
+async function findMissionControlGatewayId() {
+  try {
+    const data = await mcFetch('/api/gateways')
+    const gws = data.gateways || data
+    if (Array.isArray(gws) && gws.length > 0) {
+      const primary = gws.find(g => g.is_primary) || gws[0]
+      mcGatewayId = primary.id
+      return mcGatewayId
+    }
+  } catch (err) {
+    emitLog('warn', `Cannot find Mission Control gateway: ${err.message}`)
+  }
+  return null
+}
+
+async function syncAgentsToMissionControl() {
+  const agents = Array.from(agentCache.values()).filter(a => !a.trashedAt)
+  if (agents.length === 0) return
+
+  const gwId = mcGatewayId || await findMissionControlGatewayId()
+  if (!gwId) return
+
+  try {
+    const agentList = agents.map(a => ({
+      name: a.name,
+      role: a.role === 'coordinator' ? 'coordinator' : 'worker',
+    }))
+
+    const result = await mcFetch('/api/gateways', {
+      method: 'PUT',
+      body: JSON.stringify({ id: gwId, agents: agentList }),
+    })
+    if (result.agents_registered > 0) {
+      emitLog('info', `Synced ${result.agents_registered} agents to Mission Control`)
+    }
+  } catch (err) {
+    if (err.name !== 'AbortError') emitLog('warn', `Mission Control agent sync: ${err.message}`)
   }
 }
 
@@ -199,6 +251,9 @@ wss.on('error', (err) => console.error('Server error:', err))
 
 setInterval(() => { if (clients.size > 0) emitTick() }, 3000)
 setInterval(() => syncAgents(), SYNC_INTERVAL)
+setInterval(() => syncAgentsToMissionControl(), 30000)
 syncAgents()
+setTimeout(() => syncAgentsToMissionControl(), 5000)
 
 console.log(`Gateway bridge listening on ws://0.0.0.0:${PORT}`)
+console.log(`Mission Control sync: ${MC_URL} (key set: ${!!MC_API_KEY})`)
