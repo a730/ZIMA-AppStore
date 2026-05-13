@@ -16,5 +16,11 @@
         "editor": "a730",
         "date": "1717171200",
         "reason": "Unified AI Agent Swarm Orchestration Platform"
+    },
+    {
+        "name": "hermes-web-ui",
+        "editor": "a730",
+        "date": "1717171200",
+        "reason": "Full-featured web dashboard for Hermes Agent"
     }
 ]

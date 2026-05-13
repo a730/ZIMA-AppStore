@@ -28,5 +28,10 @@
     "name": "SwarmControl",
     "font": "swarm-control",
     "description": "Agent Platforms"
+  },
+  {
+    "name": "HermesWebUI",
+    "font": "hermes-web-ui",
+    "description": "Agent Platforms"
   }
 ]

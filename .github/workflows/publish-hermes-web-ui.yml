@@ -1,0 +1,50 @@
+name: Build and Publish Hermes Web UI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Apps/hermes-web-ui/**'
+      - '.github/workflows/publish-hermes-web-ui.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 0'  # weekly rebuild to pick up upstream changes
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: https://github.com/EKKOLearnAI/hermes-web-ui.git#main
+          file: Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/a730/hermes-web-ui:latest
+            ghcr.io/a730/hermes-web-ui:${{ github.sha }}

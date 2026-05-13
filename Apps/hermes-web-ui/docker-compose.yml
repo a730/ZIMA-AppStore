@@ -1,0 +1,70 @@
+version: "3.7"
+name: hermes-web-ui
+
+services:
+  hermes-webui:
+    container_name: HermesWebUI
+    image: ghcr.io/a730/hermes-web-ui:latest
+    ports:
+      - "6060:6060"
+    environment:
+      PORT: '6060'
+      HERMES_HOME: '/home/agent/.hermes'
+      HERMES_BIN: '/opt/hermes/.venv/bin/hermes'
+      AUTH_DISABLED: '${AUTH_DISABLED:-false}'
+      HERMES_ALLOW_ROOT_GATEWAY: '1'
+    volumes:
+      - /DATA/AppData/hermes-web-ui/hermes_data:/home/agent/.hermes
+      - /DATA/AppData/hermes-web-ui/webui_data:/home/agent/.hermes-web-ui
+    labels:
+      - "casaos.port=6060"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6060/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    x-casaos:
+      envs:
+        - container: AUTH_DISABLED
+          description:
+            en_us: 'Disable authentication (set to true for local-only access).'
+          default: 'false'
+      volumes:
+        - container: /home/agent/.hermes
+          description:
+            en_us: Hermes Agent data directory (config, credentials, sessions)
+        - container: /home/agent/.hermes-web-ui
+          description:
+            en_us: Hermes Web UI persistent data
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: HermesWebUI
+  description:
+    en_us: A full-featured web dashboard for Hermes Agent. Manage AI chat sessions, monitor usage and costs, configure multi-platform channels (Telegram, Discord, Slack, WhatsApp, Matrix, Feishu, WeChat, WeCom), schedule cron jobs, browse skills, and manage models — all from a clean, responsive web interface.
+  tagline:
+    en_us: Web dashboard for Hermes Agent
+  developer: EKKOLearnAI
+  author: a730
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/hermes-web-ui/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/hermes-web-ui/thumbnail.png
+  title:
+    en_us: Hermes Web UI
+  category: Agent Platforms
+  port_map: "6060"
+  scheme: http
+  index: /
+  tips:
+    before_install:
+      en_us: |
+        Hermes Web UI requires the Hermes Agent runtime and will build from source on first install — this may take 10-15 minutes.
+        After installation, open http://localhost:6060 to access the dashboard.
+        The app stores data in /DATA/AppData/hermes-web-ui/.
