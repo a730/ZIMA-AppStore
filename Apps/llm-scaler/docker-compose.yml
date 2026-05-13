@@ -39,8 +39,8 @@ x-casaos:
     en_us: Intel Arc optimized LLM scaling
   developer: intel
   author: Zima
-  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/llm-scaler/logo.png
-  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/llm-scaler/logo.png
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/llm-scaler/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/llm-scaler/logo.png
   title:
     en_us: LLM Scaler
   category: Generative AI

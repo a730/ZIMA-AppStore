@@ -46,8 +46,8 @@ x-casaos:
     en_us: Beautiful ROM manager
   developer: romm
   author: Zima
-  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/romm/logo.png
-  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/romm/logo.png
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/romm/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/romm/logo.png
   title:
     en_us: RomM
   category: Games

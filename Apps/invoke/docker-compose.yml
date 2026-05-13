@@ -40,8 +40,8 @@ x-casaos:
     en_us: Advanced Stable Diffusion Interface
   developer: invoke-ai
   author: JustSerdar
-  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/invoke/logo.png
-  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/invoke/logo.png
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/invoke/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/invoke/logo.png
   title:
     en_us: InvokeAI
   category: Generative AI

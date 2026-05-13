@@ -32,8 +32,8 @@ x-casaos:
     en_us: Secure web-based terminal
   developer: open-webui
   author: Zima
-  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/open-terminal/logo.png
-  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/open-terminal/logo.png
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/open-terminal/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/open-terminal/logo.png
   title:
     en_us: Open Terminal
   category: Utilities

@@ -32,8 +32,8 @@ x-casaos:
     en_us: Interface for your local LLMs
   developer: open-webui
   author: Zima
-  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/open-webui/logo.png
-  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/open-webui/logo.png
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/open-webui/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/open-webui/logo.png
   title:
     en_us: Open WebUI
   category: Generative AI

@@ -31,8 +31,8 @@ x-casaos:
     en_us: All-in-one DevOps platform
   developer: onedev
   author: Zima
-  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/onedev/logo.png
-  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/onedev/logo.png
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/onedev/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/onedev/thumbnail.png
   title:
     en_us: OneDev
   category: Development

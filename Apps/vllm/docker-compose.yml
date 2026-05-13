@@ -39,8 +39,8 @@ x-casaos:
     en_us: High-throughput LLM serving
   developer: vllm
   author: Zima
-  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/vllm/logo.png
-  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/vllm/logo.png
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/vllm/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/vllm/thumbnail.png
   title:
     en_us: vLLM
   category: Generative AI

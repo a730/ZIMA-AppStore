@@ -120,8 +120,8 @@ x-casaos:
     en_us: AI-powered, privacy-first email client
   developer: Mail-0
   author: Darweb
-  icon: https://avatars.githubusercontent.com/u/198371852?s=200&v=4
-  thumbnail: https://yourdomain.com/thumbnail.png
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/zerodotemail/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/zerodotemail/thumbnail.png
   category: Communication
   port_map: "3000"
   scheme: http

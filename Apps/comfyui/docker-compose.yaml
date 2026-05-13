@@ -73,8 +73,8 @@ x-casaos:
     en_us: A powerful and modular stable diffusion GUI
   developer: comfyanonymous
   author: JustSerdar
-  icon: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/comfyui/logo.png
-  thumbnail: https://raw.githubusercontent.com/justserdar/ZimaOS-AppStore/main/Apps/comfyui/logo.png
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/comfyui/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/comfyui/logo.png
   title:
     en_us: ComfyUI
   category: Generative AI
