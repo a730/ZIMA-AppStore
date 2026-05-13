@@ -23,5 +23,10 @@
     "name": "Blinko",
     "font": "blinko",
     "description": "Productivity"
+  },
+  {
+    "name": "SwarmControl",
+    "font": "swarm-control",
+    "description": "Agent Platforms"
   }
 ]

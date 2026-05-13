@@ -10,5 +10,11 @@
         "editor": "jpalmae",
         "date": "1715341200",
         "reason": "Advanced AI Agent Control Plane"
+    },
+    {
+        "name": "swarm-control",
+        "editor": "a730",
+        "date": "1717171200",
+        "reason": "Unified AI Agent Swarm Orchestration Platform"
     }
 ]

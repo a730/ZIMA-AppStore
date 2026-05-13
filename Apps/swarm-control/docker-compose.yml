@@ -1,0 +1,121 @@
+version: "3.7"
+name: swarm-control
+
+services:
+  swarmclaw:
+    container_name: SwarmClaw
+    image: ghcr.io/swarmclawai/swarmclaw:latest
+    ports:
+      - "3456:3456"
+      - "3457:3457"
+    environment:
+      ACCESS_KEY: '${SWARMCLAW_API_KEY:-auto}'
+    volumes:
+      - /DATA/AppData/swarm-control/swarmclaw-data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3456/api/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  gateway-bridge:
+    container_name: SwarmControlBridge
+    build: ./bridge
+    ports:
+      - "18789:18789"
+    environment:
+      SWARMCLAW_API_URL: 'http://swarmclaw:3456'
+      SWARMCLAW_API_KEY: '${SWARMCLAW_API_KEY:-auto}'
+      GATEWAY_BRIDGE_PORT: '18789'
+      AGENT_SYNC_INTERVAL_MS: '5000'
+    depends_on:
+      swarmclaw:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mission-control:
+    container_name: SwarmControl
+    image: ghcr.io/builderz-labs/mission-control:latest
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: '3000'
+      OPENCLAW_GATEWAY_HOST: 'gateway-bridge'
+      OPENCLAW_GATEWAY_PORT: '18789'
+      MC_DEFAULT_GATEWAY_NAME: 'swarmclaw-bridge'
+      MC_COORDINATOR_AGENT: 'coordinator'
+      AUTH_USER: 'admin'
+      AUTH_PASS: '${MC_AUTH_PASS:-swarmcontrol}'
+      API_KEY: '${MC_API_KEY:-swarmcontrol-api-key}'
+      NEXT_PUBLIC_GATEWAY_URL: 'ws://localhost:18789'
+      NEXT_PUBLIC_GATEWAY_OPTIONAL: 'true'
+    depends_on:
+      - gateway-bridge
+    labels:
+      - "casaos.port=3000"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
+      - /DATA/AppData/swarm-control/mc-data:/app/.data
+    restart: unless-stopped
+    x-casaos:
+      envs:
+        - container: SWARMCLAW_API_KEY
+          description:
+            en_us: 'API key for SwarmClaw agent runtime authentication. Auto-generated if left empty.'
+          default: auto
+        - container: MC_AUTH_PASS
+          description:
+            en_us: 'Password for Mission Control admin login (username: admin).'
+          default: swarmcontrol
+        - container: MC_API_KEY
+          description:
+            en_us: API key for Mission Control programmatic access.
+          default: swarmcontrol-api-key
+        - container: NEXT_PUBLIC_GATEWAY_URL
+          description:
+            en_us: WebSocket URL for the gateway bridge (change host if accessing remotely).
+          default: ws://localhost:18789
+      volumes:
+        - container: /app/.data
+          description:
+            en_us: Mission Control SQLite database and application data
+        - container: /DATA/AppData/swarm-control/swarmclaw-data
+          description:
+            en_us: SwarmClaw agent data, memory, and configuration
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: SwarmControl
+  description:
+    en_us: Unified AI agent swarm orchestration platform. Combines SwarmClaw agent runtime with Mission Control dashboard. Run autonomous AI agent swarms with delegation, memory, MCP tools, and real-time monitoring — all from a single dashboard.
+  tagline:
+    en_us: Autonomous AI agent swarm orchestration
+  developer: SwarmClaw AI + Builderz Labs
+  author: a730
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/swarm-control/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/swarm-control/thumbnail.png
+  title:
+    en_us: SwarmControl
+  category: Agent Platforms
+  port_map: "3000"
+  scheme: http
+  index: /setup
+  tips:
+    before_install:
+      en_us: |
+        SwarmControl combines SwarmClaw (agent runtime) with Mission Control (orchestration dashboard).
+        First deployment will build the gateway bridge from source — this may take several minutes.
+        After installation, open Mission Control at http://localhost:3000/setup to create your admin account.
+        SwarmClaw is available at http://localhost:3456.
+        All agents created in SwarmClaw automatically appear in Mission Control.

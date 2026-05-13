@@ -1,0 +1,85 @@
+services:
+  # ─── SwarmClaw — AI agent runtime ───
+  swarmclaw:
+    image: ghcr.io/swarmclawai/swarmclaw:latest
+    container_name: swarmcontrol-swarmclaw
+    ports:
+      - "3456:3456"
+      - "3457:3457"
+    volumes:
+      - swarmclaw-data:/app/data
+      - ./config/swarmclaw.env:/app/.env.local:ro
+    environment:
+      - SWARMCLAW_API_URL=http://swarmclaw:3456
+      - SWARMCLAW_API_KEY=${SWARMCLAW_API_KEY:-auto}
+      - ACCESS_KEY=${SWARMCLAW_API_KEY:-auto}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3456/api/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - swarm-net
+    restart: unless-stopped
+
+  # ─── Gateway Bridge — exposes SwarmClaw agents as an OpenClaw gateway ───
+  gateway-bridge:
+    build:
+      context: ./bridge
+      dockerfile: Dockerfile
+    container_name: swarmcontrol-bridge
+    ports:
+      - "${GATEWAY_BRIDGE_PORT:-18789}:18789"
+    environment:
+      - SWARMCLAW_API_URL=http://swarmclaw:3456
+      - SWARMCLAW_API_KEY=${SWARMCLAW_API_KEY:-auto}
+      - GATEWAY_BRIDGE_PORT=18789
+      - AGENT_SYNC_INTERVAL_MS=${AGENT_SYNC_INTERVAL_MS:-5000}
+    depends_on:
+      swarmclaw:
+        condition: service_healthy
+    networks:
+      - swarm-net
+    restart: unless-stopped
+
+  # ─── Mission Control — agent orchestration dashboard ───
+  mission-control:
+    image: ghcr.io/builderz-labs/mission-control:latest
+    container_name: swarmcontrol-mission-control
+    ports:
+      - "${MC_PORT:-3000}:3000"
+    environment:
+      - PORT=3000
+      # Point Mission Control to the gateway bridge
+      - OPENCLAW_GATEWAY_HOST=gateway-bridge
+      - OPENCLAW_GATEWAY_PORT=18789
+      # Auto-register the bridge as primary gateway
+      - MC_DEFAULT_GATEWAY_NAME=swarmclaw-bridge
+      # Coordinator agent name for orchestration
+      - MC_COORDINATOR_AGENT=coordinator
+      # Auth
+      - AUTH_USER=${MC_AUTH_USER:-admin}
+      - AUTH_PASS=${MC_AUTH_PASS}
+      - API_KEY=${MC_API_KEY}
+      # Browser WebSocket URL for gateway bridge (published port)
+      - NEXT_PUBLIC_GATEWAY_URL=ws://localhost:${GATEWAY_BRIDGE_PORT:-18789}
+      # Allow standalone mode so MC works even if bridge is down
+      - NEXT_PUBLIC_GATEWAY_OPTIONAL=true
+    volumes:
+      - mc-data:/app/.data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - gateway-bridge
+    networks:
+      - swarm-net
+    restart: unless-stopped
+
+volumes:
+  swarmclaw-data:
+  mc-data:
+
+networks:
+  swarm-net:
+    driver: bridge
