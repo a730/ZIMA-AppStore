@@ -39,7 +39,7 @@ services:
       WORKSPACES_ROOT: /app/workspaces
       BRANDING_ROOT: /app/workspaces/_branding
       PTY_SHELL: /bin/sh
-      CORS_ORIGINS: '["http://localhost:3420","http://frontend"]'
+      CORS_ORIGINS: '["http://localhost:3420","http://hermeshq-frontend"]'
     volumes:
       - /DATA/AppData/HermesHQ/workspaces:/app/workspaces
     extra_hosts:
@@ -71,7 +71,7 @@ services:
           description:
             en_us: Agent workspaces and data
 
-  frontend:
+  hermeshq-frontend:
     network_mode: bridge
     image: ghcr.io/a730/hermeshq-frontend:latest
     container_name: hermeshq-frontend
