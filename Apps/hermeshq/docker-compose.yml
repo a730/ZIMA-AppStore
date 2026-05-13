@@ -72,7 +72,6 @@ services:
             en_us: Agent workspaces and data
 
   hermeshq-frontend:
-    network_mode: bridge
     image: ghcr.io/a730/hermeshq-frontend:latest
     container_name: hermeshq-frontend
     depends_on:
