@@ -1,6 +1,7 @@
 FROM python:3.12-slim AS builder
 
 ARG VLLM_VERSION=v0.8.4
+ARG BUILD_DATE
 ARG MAX_JOBS=16
 
 RUN apt-get update && apt-get install -y \
