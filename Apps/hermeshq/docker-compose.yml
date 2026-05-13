@@ -86,6 +86,10 @@ services:
     restart: unless-stopped
     networks:
       - default
+    labels:
+      - "casaos.port=3420"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
     x-casaos:
       envs:
         - container: VITE_API_BASE_URL
@@ -99,6 +103,7 @@ networks:
 x-casaos:
   architectures:
     - amd64
+    - arm64
   main: frontend
   description:
     en_us: HermesHQ is a Docker-first control plane for running and operating multiple Hermes Agent instances from one web application. Features include web UI, RBAC, task dispatch, schedules, inter-agent communication, and enterprise MCP access.
