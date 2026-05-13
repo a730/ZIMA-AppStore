@@ -16,21 +16,20 @@ Apps/your-app/
 ## DO's and DON'Ts
 
 ### ✅ DO
-- Use `network_mode: bridge` on the main service
 - Add a `healthcheck` to the main service
-- Set `main:` to match the `container_name:` (NOT the service name)
-  - e.g. service `frontend`, container `hermeshq-frontend` → `main: hermeshq-frontend`
 - Quote environment variable values as YAML strings: `KEY: 'value here'`
   - Never use YAML flow sequences: `KEY: ["a","b"]` ← BROKEN
 - Add `casaos.port`, `casaos.protocol`, `casaos.entrypoint` labels on the main service
 - Include `logo.png` in the app directory
+- Make `main:` match the **service name** exactly (not container_name)
 
 ### ❌ DON'T
 - Don't leave orphan `docker-compose.yml` files in `Apps/` root (triggers single-file mode, hides ALL apps)
 - Don't leave dev-only `.yml` files without `x-casaos` in `Apps/` root
-- Don't use custom Docker networks (`networks:` block) — CasaOS expects bridge networking
+- Don't use `network_mode: bridge` (breaks inter-service DNS — services won't resolve each other by hostname)
+- Don't use custom Docker networks (`networks:` block)
 - Don't skip the healthcheck
-- Don't set `main:` to the service name if it differs from container_name
+- Don't use YAML flow sequences for env values
 
 ## Registry Files
 
@@ -66,7 +65,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    network_mode: bridge             # REQUIRED - DO NOT use custom networks
     restart: unless-stopped
     environment:
       SOME_KEY: 'some value'         # always quote env values
@@ -136,14 +134,17 @@ x-casaos:
 
 - [ ] No orphan `docker-compose.yml` in `Apps/` root
 - [ ] No orphan `.yml` files in `Apps/` root
-- [ ] `network_mode: bridge` on main service
+- [ ] No orphan `docker-compose.yml` in `Apps/` root
+- [ ] No orphan `.yml` files in `Apps/` root
 - [ ] `healthcheck` on main service
-- [ ] `main:` matches `container_name` (not service name)
+- [ ] `main:` matches the **service name** (not container_name)
 - [ ] All env values are quoted strings (no YAML lists)
+- [ ] No `network_mode: bridge` (breaks inter-service DNS)
+- [ ] No custom `networks:` blocks
 - [ ] `casaos.port`, `casaos.protocol`, `casaos.entrypoint` labels on main service
 - [ ] `icon:` URL uses correct repo path
 - [ ] `port_map:` matches `casaos.port`
 - [ ] `logo.png` exists in app directory
-- [ ] No custom `networks:` blocks
+- [ ] `screenshot-1.png` exists and `screenshots:` in x-casaos
 - [ ] Valid YAML syntax (`python3 -c "import yaml; yaml.safe_load(open('Apps/your-app/docker-compose.yml'))"`)
 - [ ] Registered in `featured-apps.json` / `recommend-list.json` (if desired)
