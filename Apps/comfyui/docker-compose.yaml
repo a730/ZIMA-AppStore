@@ -81,6 +81,8 @@ x-casaos:
   port_map: "8189"
   scheme: http
   index: /
+  screenshots:
+    - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/comfyui/screenshot-1.png
   tips:
     before_install:
       en_us: |

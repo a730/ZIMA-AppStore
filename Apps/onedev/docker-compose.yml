@@ -39,3 +39,5 @@ x-casaos:
   port_map: "6610"
   scheme: http
   index: /
+  screenshots:
+    - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/onedev/screenshot-1.png

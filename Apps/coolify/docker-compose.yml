@@ -432,6 +432,10 @@ x-casaos:
     custom: Coolify
   category: SelfHost
   port_map: "8000"
+  scheme: http
+  index: /
+  screenshots:
+    - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/coolify/screenshot-1.png
   # Tips
   tips:
     before_install:

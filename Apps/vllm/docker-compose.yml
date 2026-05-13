@@ -47,3 +47,5 @@ x-casaos:
   port_map: "8000"
   scheme: http
   index: /
+  screenshots:
+    - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/vllm/screenshot-1.png

@@ -49,3 +49,8 @@ x-casaos:
   title:
     en_us: Blender
   category: LinuxServer.io
+  port_map: "3000"
+  scheme: http
+  index: /
+  screenshots:
+    - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/blender/screenshot-1.png
