@@ -47,7 +47,7 @@ x-casaos:
   architectures:
     - amd64
     - arm64
-  main: HermesWebUI
+  main: hermes-webui
   description:
     en_us: A full-featured web dashboard for Hermes Agent. Manage AI chat sessions, monitor usage and costs, configure multi-platform channels (Telegram, Discord, Slack, WhatsApp, Matrix, Feishu, WeChat, WeCom), schedule cron jobs, browse skills, and manage models — all from a clean, responsive web interface.
   tagline:
@@ -65,6 +65,5 @@ x-casaos:
   tips:
     before_install:
       en_us: |
-        Hermes Web UI requires the Hermes Agent runtime and will build from source on first install — this may take 10-15 minutes.
         After installation, open http://localhost:6060 to access the dashboard.
         The app stores data in /DATA/AppData/hermes-web-ui/.
