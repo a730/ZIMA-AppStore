@@ -3,49 +3,92 @@ name: vllm
 services:
   vllm:
     container_name: vllm
-    image: vllm/vllm-openai
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VLLM_VERSION: v0.8.4
+        MAX_JOBS: "16"
     ports:
       - "8000:8000"
     labels:
       - "casaos.port=8000"
       - "casaos.protocol=http"
-      - "casaos.entrypoint=/"
+      - "casaos.entrypoint=/v1/completions"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 120s
+    environment:
+      VLLM_OPENVINO_DEVICE: CPU
+      VLLM_CPU_KVCACHE_SPACE: "40"
+      VLLM_CPU_AVX2: "1"
+      VLLM_CPU_OMP_THREADS_BIND: close
+      VLLM_TARGET_DEVICE: openvino
+    volumes:
+      - /DATA/AppData/vllm/models:/root/.cache/huggingface
+      - /DATA/AppData/vllm/config:/app/config
     deploy:
       resources:
+        limits:
+          memory: 64G
+          cpus: "32"
         reservations:
-          devices:
-            - capabilities:
-                - gpu
-              driver: nvidia
-              count: -1
-    network_mode: bridge
+          memory: 16G
     restart: unless-stopped
     x-casaos:
-      volumes: []
+      envs:
+        - container: VLLM_OPENVINO_DEVICE
+          description:
+            en_us: OpenVINO device (CPU, GPU, NPU)
+        - container: VLLM_CPU_KVCACHE_SPACE
+          description:
+            en_us: KV cache size in GB (adjust based on your RAM)
+        - container: VLLM_CPU_OMP_THREADS_BIND
+          description:
+            en_us: CPU thread binding strategy (close/spread)
+      volumes:
+        - container: /root/.cache/huggingface
+          description:
+            en_us: HuggingFace model cache directory
+        - container: /app/config
+          description:
+            en_us: vLLM configuration files
 
 x-casaos:
   architectures:
     - amd64
   main: vllm
   description:
-    en_us: vLLM is a high-throughput and memory-efficient serving engine for LLMs.
+    en_us: vLLM is a high-throughput and memory-efficient serving engine for LLMs. This build is compiled from source with AVX2 and OpenVINO support, optimized for AMD Ryzen Threadripper 3970X and similar Zen2/AVX2 CPUs.
   tagline:
-    en_us: High-throughput LLM serving
-  developer: vllm
-  author: Zima
+    en_us: High-throughput LLM serving (AVX2 + OpenVINO)
+  developer: vllm-project
+  author: ZIMA
   icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/vllm/logo.png
   thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/vllm/thumbnail.png
   title:
-    en_us: vLLM
+    en_us: vLLM (AVX2 + OpenVINO)
   category: Generative AI
   port_map: "8000"
   scheme: http
   index: /
   screenshots:
     - https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/vllm/screenshot-1.png
+  tips:
+    before_install:
+      en_us: |
+        This build is compiled from source with AVX2 and OpenVINO support.
+        Optimized for AMD Ryzen Threadripper 3970X (Zen2, AVX2) CPUs.
+
+        Recommended launch arguments (edit via CasaOS or set in app config):
+          python3 -m vllm.entrypoints.openai.api_server \
+            --model <model-name> \
+            --max-model-len 8192 \
+            --dtype float32 \
+            --cpu-offload-gb 8
+
+        First build may take 30-60 minutes depending on CPU cores available.
+        Models are cached in /DATA/AppData/vllm/models after first download.
