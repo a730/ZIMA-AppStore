@@ -3,12 +3,7 @@ name: vllm
 services:
   vllm:
     container_name: vllm
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        VLLM_VERSION: v0.8.4
-        MAX_JOBS: "16"
+    image: ghcr.io/a730/vllm-cpu:latest
     ports:
       - "8000:8000"
     labels:
@@ -20,7 +15,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 120s
+      start_period: 40s
     environment:
       VLLM_OPENVINO_DEVICE: CPU
       VLLM_CPU_KVCACHE_SPACE: "40"
@@ -80,15 +75,10 @@ x-casaos:
   tips:
     before_install:
       en_us: |
-        This build is compiled from source with AVX2 and OpenVINO support.
+        Compiled from source with AVX2 and OpenVINO support.
         Optimized for AMD Ryzen Threadripper 3970X (Zen2, AVX2) CPUs.
 
         Recommended launch arguments (edit via CasaOS or set in app config):
-          python3 -m vllm.entrypoints.openai.api_server \
-            --model <model-name> \
-            --max-model-len 8192 \
-            --dtype float32 \
-            --cpu-offload-gb 8
+          --model <model-name> --max-model-len 8192 --dtype float32 --cpu-offload-gb 8
 
-        First build may take 30-60 minutes depending on CPU cores available.
         Models are cached in /DATA/AppData/vllm/models after first download.
