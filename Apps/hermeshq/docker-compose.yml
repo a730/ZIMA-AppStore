@@ -17,8 +17,6 @@ services:
     volumes:
       - /DATA/AppData/HermesHQ/postgres:/var/lib/postgresql/data
     restart: unless-stopped
-    networks:
-      - hermeshq-internal
     x-casaos:
       volumes:
         - container: /var/lib/postgresql/data
@@ -54,9 +52,6 @@ services:
         limits:
           memory: 1G
           cpus: "1.0"
-    networks:
-      - hermeshq-internal
-      - default
     x-casaos:
       envs:
         - container: JWT_SECRET
@@ -77,15 +72,20 @@ services:
             en_us: Agent workspaces and data
 
   frontend:
+    network_mode: bridge
     image: ghcr.io/a730/hermeshq-frontend:latest
     container_name: hermeshq-frontend
     depends_on:
       - backend
     ports:
       - "3420:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     restart: unless-stopped
-    networks:
-      - default
     labels:
       - "casaos.port=3420"
       - "casaos.protocol=http"
@@ -96,15 +96,11 @@ services:
           description:
             en_us: API base URL for frontend (leave empty for auto-detect)
 
-networks:
-  hermeshq-internal:
-    internal: true
-
 x-casaos:
   architectures:
     - amd64
     - arm64
-  main: hermeshq-frontend
+  main: frontend
   description:
     en_us: HermesHQ is a Docker-first control plane for running and operating multiple Hermes Agent instances from one web application. Features include web UI, RBAC, task dispatch, schedules, inter-agent communication, and enterprise MCP access.
   tagline:
