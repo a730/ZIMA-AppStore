@@ -1,7 +1,6 @@
 FROM python:3.12-slim AS builder
 
 ARG VLLM_VERSION=v0.8.4
-ARG BUILD_DATE
 ARG MAX_JOBS=16
 
 RUN apt-get update && apt-get install -y \
@@ -12,16 +11,18 @@ RUN apt-get update && apt-get install -y \
     libopenblas-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone --depth 1 --branch ${VLLM_VERSION} https://github.com/vllm-project/vllm.git /vllm
+RUN git clone --branch ${VLLM_VERSION} https://github.com/vllm-project/vllm.git /vllm && \
+    cd /vllm && git fetch --tags && \
+    pip install --upgrade pip
+
 WORKDIR /vllm
 
-RUN pip install --upgrade pip && \
-    pip install wheel setuptools && \
+RUN pip install wheel setuptools && \
     pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
 
 ENV VLLM_TARGET_DEVICE=openvino
 ENV MAX_JOBS=${MAX_JOBS}
-RUN pip install -e .
+RUN VLLM_VERSION=${VLLM_VERSION} pip install -e .
 
 FROM python:3.12-slim
 
