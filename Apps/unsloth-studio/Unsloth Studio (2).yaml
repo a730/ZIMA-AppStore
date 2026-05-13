@@ -13,10 +13,10 @@ services:
         reservations:
           devices: []
     environment:
-      - JUPYTER_PASSWORD=Bamsemums200822
+      - JUPYTER_PASSWORD=admin
       - JUPYTER_PORT=8888
       - LLAMA_ARG_THREADS=16
-      - USER_PASSWORD=Bamsemums200822
+      - USER_PASSWORD=admin
     image: unsloth/unsloth:latest
     labels:
       icon: https://unsloth.ai/cgi/image/unsloth_green_sticker_cME6ryC59BlZg-VtqGN4p.png?width=640&quality=80&format=auto
