@@ -104,7 +104,7 @@ x-casaos:
   architectures:
     - amd64
     - arm64
-  main: frontend
+  main: hermeshq-frontend
   description:
     en_us: HermesHQ is a Docker-first control plane for running and operating multiple Hermes Agent instances from one web application. Features include web UI, RBAC, task dispatch, schedules, inter-agent communication, and enterprise MCP access.
   tagline:
