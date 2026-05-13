@@ -25,9 +25,7 @@ services:
 
   # ─── Gateway Bridge — exposes SwarmClaw agents as an OpenClaw gateway ───
   gateway-bridge:
-    build:
-      context: ./bridge
-      dockerfile: Dockerfile
+    image: ghcr.io/a730/swarm-control-bridge:latest
     container_name: swarmcontrol-bridge
     ports:
       - "${GATEWAY_BRIDGE_PORT:-18789}:18789"
@@ -39,12 +37,10 @@ services:
     depends_on:
       swarmclaw:
         condition: service_healthy
-    networks:
-      - swarm-net
     restart: unless-stopped
 
   # ─── Mission Control — agent orchestration dashboard ───
-  mission-control:
+  swarmcontrol:
     image: ghcr.io/builderz-labs/mission-control:latest
     container_name: swarmcontrol-mission-control
     ports:
@@ -68,18 +64,10 @@ services:
       - NEXT_PUBLIC_GATEWAY_OPTIONAL=true
     volumes:
       - mc-data:/app/.data
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     depends_on:
       - gateway-bridge
-    networks:
-      - swarm-net
     restart: unless-stopped
 
 volumes:
   swarmclaw-data:
   mc-data:
-
-networks:
-  swarm-net:
-    driver: bridge

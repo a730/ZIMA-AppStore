@@ -35,8 +35,8 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  mission-control:
-    container_name: SwarmControl
+  swarmcontrol:
+    container_name: swarmcontrol
     image: ghcr.io/builderz-labs/mission-control:latest
     ports:
       - "3000:3000"
@@ -96,7 +96,7 @@ x-casaos:
   architectures:
     - amd64
     - arm64
-  main: SwarmControl
+  main: swarmcontrol
   description:
     en_us: Unified AI agent swarm orchestration platform. Combines SwarmClaw agent runtime with Mission Control dashboard. Run autonomous AI agent swarms with delegation, memory, MCP tools, and real-time monitoring — all from a single dashboard.
   tagline:
