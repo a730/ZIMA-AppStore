@@ -57,33 +57,42 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Extract images from compose
         id: images
         run: |
-          APPS_DIR="Apps/${{ matrix.app }}"
-          if [ -f "$APPS_DIR/docker-compose.yml" ]; then
-            IMAGES=$(python3 -c "
-import yaml, sys
-with open('$APPS_DIR/docker-compose.yml') as f:
-    data = yaml.safe_load(f)
-for svc, cfg in data.get('services', {}).items():
-    img = cfg.get('image', '')
-    if img:
-        print(img)
-" | paste -sd ',')
-            echo "images=$IMAGES" >> $GITHUB_OUTPUT
-            echo "Found images: $IMAGES"
-          fi
+          cd Apps/${{ matrix.app }}
+          IMAGES=$(node -e "
+            const yaml = require('yaml');
+            const fs = require('fs');
+            try {
+              const data = yaml.parse(fs.readFileSync('docker-compose.yml', 'utf8'));
+              const images = Object.values(data.services || {})
+                .map(s => s.image)
+                .filter(Boolean);
+              console.log(images.join(','));
+            } catch(e) { console.log(''); }
+          ")
+          echo "images=$IMAGES" >> $GITHUB_OUTPUT
+          echo "Found images: $IMAGES"
 
       - name: Install Trivy
         if: steps.images.outputs.images != ''
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget apt-transport-https gnupg
-          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-          sudo apt-get update
-          sudo apt-get install -y trivy
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq wget apt-transport-https gnupg
+          mkdir -p /etc/apt/keyrings
+          wget -qO- https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /etc/apt/keyrings/trivy.gpg > /dev/null
+          . /etc/os-release && echo "deb [signed-by=/etc/apt/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $VERSION_CODENAME main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq trivy
 
       - name: Scan images for CVEs
         if: steps.images.outputs.images != ''
@@ -91,7 +100,6 @@ for svc, cfg in data.get('services', {}).items():
         run: |
           IFS=',' read -ra IMG_LIST <<< "${{ steps.images.outputs.images }}"
           for img in "${IMG_LIST[@]}"; do
-            img=$(echo "$img" | xargs)
             echo "=== Scanning $img ==="
             trivy image --severity CRITICAL,HIGH --exit-code 1 --no-progress "$img" 2>&1 || true
           done
