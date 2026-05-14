@@ -1,9 +1,0 @@
-{
-  "name": "swarm-control-bridge",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "ws": "^8.19.0"
-  }
-}
