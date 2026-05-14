@@ -58,5 +58,10 @@
     "name": "Paperless-ngx",
     "font": "paperless-ngx",
     "description": "Productivity"
+  },
+  {
+    "name": "Qdrant",
+    "font": "qdrant",
+    "description": "AI Serving"
   }
 ]

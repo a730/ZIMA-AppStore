@@ -13,6 +13,7 @@ Your go-to App Store for Generative AI apps for CasaOS and ZimaOS devices like t
 | [Unsloth Studio](https://github.com/unslothai/unsloth-studio) | No-code UI for fine-tuning LLMs 2x faster | Generative AI | NVidia |
 | [vLLM](https://github.com/vllm-project/vllm) | High-throughput LLM inference engine | AI Serving | NVidia |
 | [LLM Scaler](https://github.com/intel/llm-scaler) | Intel GenAI serving (text, image, video) | AI Serving | Intel Arc |
+| [Qdrant](https://github.com/qdrant/qdrant) | High-performance vector database for AI embeddings and search | AI Serving | No |
 | [HermesHQ](https://github.com/jpalmae/hermeshq) | Control plane for Hermes Agent instances | Agent Platforms | No |
 | [SwarmClaw](https://github.com/swarmclawai/swarmclaw) | Self-hosted AI agent runtime and multi-agent framework | Agent Platforms | No |
 | [Mission Control](https://github.com/builderz-labs/mission-control) | Dashboard for AI agent orchestration and task management | Agent Platforms | No |

@@ -64,7 +64,7 @@ x-casaos:
   description:
     en_us: Blinko is an open-source, self-hosted personal AI note tool prioritizing privacy, designed for quickly capturing and organizing fleeting thoughts.
   tagline:
-    en_us: AI-powered personal AI note tool
+    en_us: Privacy-first AI note-taking and knowledge base
   developer: blinkospace
   author: Zima
   icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/blinko/logo.png
