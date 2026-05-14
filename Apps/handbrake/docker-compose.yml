@@ -3,7 +3,7 @@ name: handbrake
 services:
   handbrake:
     container_name: HandBrake
-    image: lscr.io/linuxserver/handbrake:latest
+    image: lscr.io/linuxserver/handbrake:1.11.1-ls25
     ports:
       - "3007:3000"
     environment:

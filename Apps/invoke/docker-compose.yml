@@ -2,7 +2,7 @@ name: invokeai
 services:
   invokeai:
     container_name: InvokeAI
-    image: ghcr.io/invoke-ai/invokeai:latest
+    image: ghcr.io/invoke-ai/invokeai:v6.12.0-cuda
     ports:
       - "9090:9090"
     deploy:

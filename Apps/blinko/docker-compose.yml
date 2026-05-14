@@ -2,7 +2,7 @@ name: blinko
 services:
   blinko-website:
     container_name: blinko-website
-    image: blinkospace/blinko:latest
+    image: blinkospace/blinko:1.8.7
     ports:
       - "1111:1111"
     labels:

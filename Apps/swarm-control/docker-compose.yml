@@ -4,7 +4,7 @@ services:
   # ─── SwarmClaw — AI agent runtime ───
   swarmclaw:
     container_name: SwarmClaw
-    image: ghcr.io/swarmclawai/swarmclaw:latest
+    image: ghcr.io/swarmclawai/swarmclaw:v1.9.31
     ports:
       - "3456:3456"
       - "3457:3457"
@@ -28,7 +28,7 @@ services:
   # ─── Ollama — local LLM provider sidecar ───
   ollama:
     container_name: SwarmControlOllama
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.23.4
     environment:
       OLLAMA_KEEP_ALIVE: '${OLLAMA_KEEP_ALIVE:-5m}'
       OLLAMA_NUM_PARALLEL: '${OLLAMA_NUM_PARALLEL:-1}'
@@ -96,7 +96,7 @@ services:
   # ─── Mission Control — agent orchestration dashboard ───
   swarmcontrol:
     container_name: swarmcontrol
-    image: ghcr.io/builderz-labs/mission-control:latest
+    image: ghcr.io/builderz-labs/mission-control:v2.0.1
     ports:
       - "3000:3000"
     environment:

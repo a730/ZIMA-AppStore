@@ -100,7 +100,7 @@ services:
       - /DATA/AppData/ZeroDotEmail/valkey-data:/bitnami/valkey/data
   upstash-proxy:
     container_name: zerodotemail-upstash-proxy
-    image: hiett/serverless-redis-http:latest
+    image: hiett/serverless-redis-http:0.0.10
     restart: unless-stopped
     environment:
       SRH_MODE: env

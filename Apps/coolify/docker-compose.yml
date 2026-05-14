@@ -331,7 +331,7 @@ services:
 
   zimaos-coolify-redis: # Redis service configuration
     container_name: zimaos-coolify-redis # Name of the running container
-    image: redis:alpine
+    image: redis:8-alpine
     command:
       [
         "redis-server",

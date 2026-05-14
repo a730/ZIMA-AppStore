@@ -3,7 +3,7 @@ name: musicbrainz-picard
 services:
   picard:
     container_name: MusicBrainzPicard
-    image: jlesage/musicbrainz-picard:latest
+    image: jlesage/musicbrainz-picard:v26.05.2
     ports:
       - "5800:5800"
     environment:

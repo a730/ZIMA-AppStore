@@ -2,7 +2,7 @@ name: swarmclaw
 services:
   swarmclaw:
     container_name: SwarmClaw
-    image: ghcr.io/swarmclawai/swarmclaw:latest
+    image: ghcr.io/swarmclawai/swarmclaw:v1.9.31
     ports:
       - "3456:3456"
       - "3457:3457"

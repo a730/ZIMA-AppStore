@@ -2,7 +2,7 @@ name: comfyui
 services:
   comfyui:
     container_name: comfyui
-    image: yanwk/comfyui-boot:cu126-slim
+    image: yanwk/comfyui-boot:cu126-slim-20260514
     ports:
       - "8189:8188"
     labels:
