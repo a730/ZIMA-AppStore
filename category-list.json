@@ -33,5 +33,20 @@
     "name": "HermesWebUI",
     "font": "hermes-web-ui",
     "description": "Agent Platforms"
+  },
+  {
+    "name": "SwarmClaw",
+    "font": "swarmclaw",
+    "description": "Agent Platforms"
+  },
+  {
+    "name": "MissionControl",
+    "font": "mission-control",
+    "description": "Agent Platforms"
+  },
+  {
+    "name": "Paperclip",
+    "font": "paperclip",
+    "description": "Agent Platforms"
   }
 ]

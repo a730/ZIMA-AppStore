@@ -1,0 +1,61 @@
+version: "3.7"
+name: swarmclaw
+
+services:
+  swarmclaw:
+    container_name: SwarmClaw
+    image: ghcr.io/swarmclawai/swarmclaw:latest
+    ports:
+      - "3456:3456"
+      - "3457:3457"
+    environment:
+      ACCESS_KEY: '${SWARMCLAW_ACCESS_KEY:-auto}'
+    volumes:
+      - /DATA/AppData/swarmclaw/data:/app/data
+    labels:
+      - "casaos.port=3456"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3456/api/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    x-casaos:
+      envs:
+        - container: SWARMCLAW_ACCESS_KEY
+          description:
+            en_us: 'Access key for SwarmClaw UI login. Auto-generated on first launch if left empty.'
+          default: auto
+      volumes:
+        - container: /app/data
+          description:
+            en_us: SwarmClaw agent data, memory, configuration, and SQLite database
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: swarmclaw
+  description:
+    en_us: 'Open-source self-hosted AI agent runtime and multi-agent framework. Run autonomous AI agents, agent swarms, and orchestrators with memory, MCP tools, skills, delegation, schedules, and 23+ LLM providers (Claude, GPT, Gemini, OpenRouter, Ollama). A practical Claude Code and LangChain alternative.'
+  tagline:
+    en_us: Self-hosted AI agent runtime and multi-agent framework
+  developer: SwarmClaw AI
+  author: a730
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/swarmclaw/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/swarmclaw/thumbnail.png
+  title:
+    en_us: SwarmClaw
+  category: Agent Platforms
+  port_map: "3456"
+  scheme: http
+  index: /
+  tips:
+    before_install:
+      en_us: |
+        SwarmClaw is a self-hosted AI agent runtime. On first launch, an access key is auto-generated and printed to the container logs.
+        Open http://localhost:3456 in your browser, enter the access key, and complete the setup wizard.
+        The setup wizard will help you add LLM providers (Ollama, OpenAI, Anthropic, etc.) and create your first agents.

@@ -1,0 +1,78 @@
+version: "3.7"
+name: paperclip
+
+services:
+  paperclip:
+    container_name: Paperclip
+    image: ghcr.io/paperclipai/paperclip:latest
+    ports:
+      - "3100:3100"
+    environment:
+      HOST: '0.0.0.0'
+      PORT: '3100'
+      SERVE_UI: 'true'
+      PAPERCLIP_HOME: '/paperclip'
+      PAPERCLIP_PUBLIC_URL: 'http://localhost:3100'
+      PAPERCLIP_DEPLOYMENT_MODE: 'authenticated'
+      PAPERCLIP_DEPLOYMENT_EXPOSURE: 'private'
+      BETTER_AUTH_SECRET: '${BETTER_AUTH_SECRET:-}'
+      OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
+      ANTHROPIC_API_KEY: '${ANTHROPIC_API_KEY:-}'
+    volumes:
+      - /DATA/AppData/paperclip/data:/paperclip
+    labels:
+      - "casaos.port=3100"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3100/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    x-casaos:
+      envs:
+        - container: BETTER_AUTH_SECRET
+          description:
+            en_us: 'Secret key for authentication. REQUIRED — generate one via: openssl rand -hex 32'
+          default: ''
+        - container: OPENAI_API_KEY
+          description:
+            en_us: 'OpenAI API key for agent adapters (optional)'
+          default: ''
+        - container: ANTHROPIC_API_KEY
+          description:
+            en_us: 'Anthropic API key for Claude agent adapters (optional)'
+          default: ''
+      volumes:
+        - container: /paperclip
+          description:
+            en_us: 'Paperclip data directory (embedded Postgres, assets, secrets, agent workspaces)'
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: paperclip
+  description:
+    en_us: 'Open-source orchestration for AI agent companies. Define business goals, hire agent teams (OpenClaw, Claude Code, Codex, Cursor), set budgets, and let agents work autonomously — all from one dashboard. Embedded PostgreSQL, no external database required.'
+  tagline:
+    en_us: AI agent company orchestration platform
+  developer: Paperclip AI
+  author: a730
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/paperclip/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/paperclip/thumbnail.png
+  title:
+    en_us: Paperclip
+  category: Agent Platforms
+  port_map: "3100"
+  scheme: http
+  index: /
+  tips:
+    before_install:
+      en_us: |
+        Paperclip orchestrates teams of AI agents to run autonomous businesses.
+        After installation, open http://localhost:3100 and complete the setup.
+        IMPORTANT: You MUST set BETTER_AUTH_SECRET to a random 64-char hex string (generate with: openssl rand -hex 32).
+        Optionally set OPENAI_API_KEY and/or ANTHROPIC_API_KEY to enable local agent adapters.

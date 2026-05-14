@@ -1,0 +1,69 @@
+version: "3.7"
+name: mission-control
+
+services:
+  mission-control:
+    container_name: MissionControl
+    image: ghcr.io/builderz-labs/mission-control:latest
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: '3000'
+      NEXT_PUBLIC_GATEWAY_OPTIONAL: 'true'
+      AUTH_USER: 'admin'
+      AUTH_PASS: '${MC_AUTH_PASS:-}'
+      API_KEY: '${MC_API_KEY:-}'
+    volumes:
+      - /DATA/AppData/mission-control/data:/app/.data
+    labels:
+      - "casaos.port=3000"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/setup"
+    healthcheck:
+      test: ["CMD", "node", "/app/healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    x-casaos:
+      envs:
+        - container: MC_AUTH_PASS
+          description:
+            en_us: 'Admin password. Auto-generated on first launch if left empty (check container logs).'
+          default: ''
+        - container: MC_API_KEY
+          description:
+            en_us: 'API key for programmatic access. Auto-generated on first launch if left empty.'
+          default: ''
+      volumes:
+        - container: /app/.data
+          description:
+            en_us: Mission Control SQLite database and application data
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: mission-control
+  description:
+    en_us: 'Open-source dashboard for AI agent orchestration. Manage agent fleets, dispatch tasks, track costs, and coordinate multi-agent workflows — self-hosted, zero external dependencies, powered by SQLite. 32 panels including tasks, agents, skills, logs, tokens, memory, security, cron, alerts, webhooks, and pipelines.'
+  tagline:
+    en_us: AI agent orchestration dashboard
+  developer: Builderz Labs
+  author: a730
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/mission-control/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/mission-control/thumbnail.png
+  title:
+    en_us: Mission Control
+  category: Agent Platforms
+  port_map: "3000"
+  scheme: http
+  index: /setup
+  tips:
+    before_install:
+      en_us: |
+        Mission Control runs standalone without requiring an agent gateway (NEXT_PUBLIC_GATEWAY_OPTIONAL=true).
+        After installation, open http://localhost:3000/setup to create your admin account.
+        You can connect agent gateways later from the Settings page.
+        If AUTH_PASS is left empty, a password is auto-generated on first launch — check the container logs.
