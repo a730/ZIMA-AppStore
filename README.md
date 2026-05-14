@@ -14,11 +14,17 @@ Your go-to App Store for Generative AI apps for CasaOS and ZimaOS devices like t
 | [vLLM](https://github.com/vllm-project/vllm) | High-throughput LLM inference engine | AI Serving | NVidia |
 | [LLM Scaler](https://github.com/intel/llm-scaler) | Intel GenAI serving (text, image, video) | AI Serving | Intel Arc |
 | [HermesHQ](https://github.com/jpalmae/hermeshq) | Control plane for Hermes Agent instances | Agent Platforms | No |
+| [SwarmClaw](https://github.com/swarmclawai/swarmclaw) | Self-hosted AI agent runtime and multi-agent framework | Agent Platforms | No |
+| [Mission Control](https://github.com/builderz-labs/mission-control) | Dashboard for AI agent orchestration and task management | Agent Platforms | No |
+| [Paperclip](https://github.com/paperclipai/paperclip) | Orchestration platform for autonomous AI agent companies | Agent Platforms | No |
+| [Hermes Web UI](https://github.com/nicholasxuu/hermes-web-ui) | Web dashboard for Hermes Agent | Agent Platforms | No |
+| [SwarmControl](https://github.com/swarmclawai/swarmclaw) | SwarmClaw + Mission Control unified bundle | Agent Platforms | No |
 | [Open Terminal](https://github.com/open-webui/open-terminal) | Self-hosted web terminal for AI agents | Dev Tools | No |
 | [OneDev](https://github.com/theonedev/onedev) | Self-hosted Git server with CI/CD | Dev Tools | No |
 | [Coolify](https://github.com/coollabsio/coolify) | Self-hosted PaaS for apps and services | SelfHost | No |
 | [ZeroDotEmail](https://github.com/Mail-0/ZeroDotEmail) | AI-powered privacy-first email client | Communication | No |
 | [RomM](https://github.com/rommapp/romm) | Self-hosted ROM manager and player | Gaming | No |
+| [Blinko](https://github.com/blinkoapp/blinko) | Privacy-first AI note-taking and personal knowledge base | Productivity | No |
 | [CNCjs](https://github.com/cncjs/cncjs) | Web-based CNC controller | Maker Tools | No |
 
 ## Quick Start
