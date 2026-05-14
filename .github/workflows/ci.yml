@@ -34,5 +34,87 @@ jobs:
             python3 -c "import yaml; yaml.safe_load(open('$f')); print('  OK')"
           done
 
-      - name: Run tests
+      - name: Run app validation tests
         run: npm test
+
+      - name: Run security hardening tests
+        run: npx jest Apps/__tests__/security.test.js --verbose
+
+  security-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [
+          'comfyui', 'blender', 'open-webui', 'vllm', 'paperless-ngx',
+          'bookstack', 'qdrant', 'swarmclaw', 'mission-control', 'paperclip'
+        ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract images from compose
+        id: images
+        run: |
+          APPS_DIR="Apps/${{ matrix.app }}"
+          if [ -f "$APPS_DIR/docker-compose.yml" ]; then
+            IMAGES=$(python3 -c "
+import yaml, sys
+with open('$APPS_DIR/docker-compose.yml') as f:
+    data = yaml.safe_load(f)
+for svc, cfg in data.get('services', {}).items():
+    img = cfg.get('image', '')
+    if img:
+        print(img)
+" | paste -sd ',')
+            echo "images=$IMAGES" >> $GITHUB_OUTPUT
+            echo "Found images: $IMAGES"
+          fi
+
+      - name: Install Trivy
+        if: steps.images.outputs.images != ''
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https gnupg
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install -y trivy
+
+      - name: Scan images for CVEs
+        if: steps.images.outputs.images != ''
+        continue-on-error: true
+        run: |
+          IFS=',' read -ra IMG_LIST <<< "${{ steps.images.outputs.images }}"
+          for img in "${IMG_LIST[@]}"; do
+            img=$(echo "$img" | xargs)
+            echo "=== Scanning $img ==="
+            trivy image --severity CRITICAL,HIGH --exit-code 1 --no-progress "$img" 2>&1 || true
+          done
+
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check compliance metadata
+        run: |
+          MISSING_COM=false
+          MISSING_SEC=false
+          for dir in Apps/*/; do
+            app=$(basename "$dir")
+            [ "$app" = "__tests__" ] && continue
+            [ ! -f "${dir}compliance.yaml" ] && echo "MISSING: $app/compliance.yaml" && MISSING_COM=true
+            [ ! -f "${dir}SECURITY.md" ] && echo "MISSING: $app/SECURITY.md" && MISSING_SEC=true
+          done
+          if [ "$MISSING_COM" = "true" ] || [ "$MISSING_SEC" = "true" ]; then
+            echo "::warning::Some apps missing compliance metadata or security docs"
+          fi

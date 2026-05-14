@@ -44,13 +44,13 @@ describe('App Store Validation', () => {
 
   test('no orphan compose files in Apps/ root', () => {
     const rootFiles = fs.readdirSync(APPS_DIR)
-      .filter(f => f.endsWith('.yml') || f.endsWith('.yaml'));
+      .filter(f => (f.endsWith('.yml') || f.endsWith('.yaml')) && !f.startsWith('_'));
     expect(rootFiles).toEqual([]);
   });
 
   test('all compose files use .yml extension (not .yaml)', () => {
     const yamlFiles = fs.readdirSync(APPS_DIR, { recursive: true })
-      .filter(f => f.endsWith('.yaml'));
+      .filter(f => f.endsWith('.yaml') && !f.endsWith('compliance.yaml') && !f.startsWith('_'));
     expect(yamlFiles).toEqual([]);
   });
 

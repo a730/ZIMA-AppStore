@@ -132,6 +132,31 @@ x-casaos:
   #       Any pre-install notes for the user.
 ```
 
+## Security Checklist
+
+### Required
+- [ ] `compliance.yaml` exists with data_stored, network_egress, authentication fields filled
+- [ ] `SECURITY.md` exists documenting default credentials, ports, data storage
+- [ ] No hardcoded secrets — use `${VAR:-default}` pattern for all passwords/keys/tokens
+- [ ] No `privileged: true` unless absolutely required and documented
+
+### Recommended
+- [ ] `security_opt: no-new-privileges:true` on all services
+- [ ] `cap_drop: ALL` with explicit `cap_add` for needed capabilities
+- [ ] Image pinned to a specific version (not `:latest`)
+- [ ] Database ports (5432, 6379, 3306) not exposed to host unless necessary
+- [ ] Memory limits set on main service (`deploy.resources.limits.memory`)
+- [ ] CPU limits set on main service (`deploy.resources.limits.cpus`)
+- [ ] `read_only: true` + `tmpfs` for writable paths where possible
+
+### Business-grade (enterprise deployments)
+- [ ] SBOM generated on CI build (via Trivy/Syft)
+- [ ] CVE scan passes with no critical vulnerabilities
+- [ ] Image signed with Cosign
+- [ ] Network egress documented for firewall rules
+- [ ] Backup procedure documented in SECURITY.md
+- [ ] Audit logging available or built-in
+
 ## Quick Checklist
 
 - [ ] No orphan `docker-compose.yml` in `Apps/` root

@@ -1,0 +1,57 @@
+# Compliance Metadata for Business Use
+# Copy this file to Apps/your-app/compliance.yaml and fill it out.
+# Required for business/production deployments.
+
+app:
+  name: Your App
+  version: "1.0.0"
+  description: Short description of what the app does
+
+data_stored:
+  - type: user_content          # What kind of data (user_content, credentials, logs, etc.)
+    location: local_postgres    # Where stored (local_db, filesystem, external_service)
+    encryption: at_rest         # Encryption type (at_rest, in_transit, none)
+    retention: configurable     # How long data is kept (configurable, fixed, ephemeral)
+    user_deletable: true        # Can the user delete their own data?
+
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+
+network_egress:
+  telemetry: false              # Does the app send telemetry/analytics externally?
+  update_checks: true           # Does it check for updates?
+  external_api_calls:           # External APIs it calls
+    - url: https://example.com/api
+      purpose: Version check
+      auth: none
+  urls:
+    - github.com
+    - pypi.org
+
+authentication:
+  local_accounts: true          # Built-in username/password
+  sso: false                    # OIDC / SAML / LDAP support
+  mfa: false                    # Multi-factor authentication
+  session_type: cookie          # cookie, token, jwt, none
+  default_credentials:
+    username: admin             # Default admin user (or N/A)
+    change_required: true       # Must user change default password?
+
+hardening:
+  container_user: app           # User the container runs as
+  read_only_fs: false           # Is the root filesystem read-only?
+  network_policy: bridge        # Docker network mode
+  exposed_ports:
+    - 3000                      # Ports exposed to the host
+    - 5432                      # Note: internal-only if possible
+
+compliance:
+  gdpr_compatible: true         # Designed with GDPR principles?
+  data_sovereignty: local       # Where data is processed/stored (local, eu, us, global)
+  backup_strategy: manual       # manual, automatic, built-in, external
+  audit_logging: false          # Built-in audit trail?
+  encryption_options:
+    - tls                       # Available encryption options

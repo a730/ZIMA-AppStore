@@ -1,0 +1,47 @@
+app:
+  name: Qdrant
+  version: latest
+  description: High-performance vector similarity search engine and vector database
+
+data_stored:
+  - type: vector_embeddings
+    location: local_filesystem
+    encryption: none
+    retention: until_deleted
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+
+network_egress:
+  telemetry: false
+  update_checks: false
+  external_api_calls: []
+  urls: []
+
+authentication:
+  local_accounts: false
+  sso: false
+  mfa: false
+  api_key_supported: true
+  default_credentials:
+    username: null
+    change_required: false
+
+hardening:
+  container_user: root
+  read_only_fs: false
+  network_policy: default
+  exposed_ports:
+    - 6333
+    - 6334
+
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: snapshot_builtin
+  audit_logging: false
+  encryption_options:
+    - tls
