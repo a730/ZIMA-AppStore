@@ -3,8 +3,7 @@ name: Build and Publish vLLM CPU (AVX2 + OpenVINO)
 on:
   push:
     branches: [main]
-    paths:
-      - 'Apps/vllm/Dockerfile'
+    tags: ['v*']
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * 0'  # weekly rebuild to pick up upstream changes
@@ -35,4 +34,6 @@ jobs:
         with:
           context: Apps/vllm
           push: true
-          tags: ghcr.io/a730/vllm-cpu:latest
+          tags: |
+            ghcr.io/a730/vllm-cpu:latest
+            ${{ github.ref_type == 'tag' && format('ghcr.io/a730/vllm-cpu:{0}', github.ref_name) || '' }}

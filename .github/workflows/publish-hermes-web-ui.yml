@@ -3,9 +3,7 @@ name: Build and Publish Hermes Web UI
 on:
   push:
     branches: [main]
-    paths:
-      - 'Apps/hermes-web-ui/**'
-      - '.github/workflows/publish-hermes-web-ui.yml'
+    tags: ['v*']
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * 0'  # weekly rebuild to pick up upstream changes
@@ -48,3 +46,4 @@ jobs:
           tags: |
             ghcr.io/a730/hermes-web-ui:latest
             ghcr.io/a730/hermes-web-ui:${{ github.sha }}
+            ${{ github.ref_type == 'tag' && format('ghcr.io/a730/hermes-web-ui:{0}', github.ref_name) || '' }}

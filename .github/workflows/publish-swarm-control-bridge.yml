@@ -3,9 +3,7 @@ name: Build and Publish SwarmControl Bridge
 on:
   push:
     branches: [main]
-    paths:
-      - 'Apps/swarm-control/bridge/**'
-      - '.github/workflows/publish-swarm-control-bridge.yml'
+    tags: ['v*']
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * 0'  # weekly rebuild to pick up upstream changes
@@ -46,3 +44,4 @@ jobs:
           tags: |
             ghcr.io/a730/swarm-control-bridge:latest
             ghcr.io/a730/swarm-control-bridge:${{ github.sha }}
+            ${{ github.ref_type == 'tag' && format('ghcr.io/a730/swarm-control-bridge:{0}', github.ref_name) || '' }}
