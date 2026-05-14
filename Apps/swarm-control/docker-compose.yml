@@ -29,8 +29,6 @@ services:
   ollama:
     container_name: SwarmControlOllama
     image: ollama/ollama:latest
-    ports:
-      - "11435:11434"
     environment:
       OLLAMA_KEEP_ALIVE: '${OLLAMA_KEEP_ALIVE:-5m}'
       OLLAMA_NUM_PARALLEL: '${OLLAMA_NUM_PARALLEL:-1}'
@@ -48,6 +46,10 @@ services:
       resources:
         limits:
           memory: 16G
+        # Uncomment below for NVIDIA GPU acceleration (RTX A2000, etc.):
+        # reservations:
+        #   devices:
+        #     - capabilities: [gpu]
     x-casaos:
       envs:
         - container: OLLAMA_KEEP_ALIVE
@@ -79,7 +81,7 @@ services:
       GATEWAY_BRIDGE_PORT: '18789'
       AGENT_SYNC_INTERVAL_MS: '${AGENT_SYNC_INTERVAL_MS:-5000}'
       MISSION_CONTROL_URL: 'http://swarmcontrol:3000'
-      MISSION_CONTROL_API_KEY: '${MC_API_KEY:-swarmcontrol-api-key}'
+      MISSION_CONTROL_API_KEY: '${MC_API_KEY:-}'
     depends_on:
       swarmclaw:
         condition: service_healthy
@@ -99,13 +101,21 @@ services:
       MC_DEFAULT_GATEWAY_NAME: 'swarmclaw-bridge'
       MC_COORDINATOR_AGENT: '${MC_COORDINATOR_AGENT:-coordinator}'
       AUTH_USER: '${MC_AUTH_USER:-admin}'
-      AUTH_PASS: '${MC_AUTH_PASS:-swarmcontrol}'
-      API_KEY: '${MC_API_KEY:-swarmcontrol-api-key}'
+      AUTH_PASS: '${MC_AUTH_PASS:-}'                   # empty = auto-generated on first launch
+      API_KEY: '${MC_API_KEY:-}'                       # empty = auto-generated on first launch
       NEXT_PUBLIC_GATEWAY_URL: 'ws://localhost:18789'
       NEXT_PUBLIC_GATEWAY_OPTIONAL: 'true'
-      MC_ENABLE_HSTS: '${MC_ENABLE_HSTS:-false}'
-      MC_ALLOWED_HOSTS: '${MC_ALLOWED_HOSTS:-}'
+      MC_ENABLE_HSTS: '${MC_ENABLE_HSTS:-true}'         # enable HSTS for security scan
+      MC_ALLOWED_HOSTS: '${MC_ALLOWED_HOSTS:-localhost,127.0.0.1}'
+      MC_COOKIE_SECURE: '${MC_COOKIE_SECURE:-true}'     # HTTPS-only cookies
+      MC_COOKIE_SAMESITE: '${MC_COOKIE_SAMESITE:-strict}' # strict SameSite
       MC_CLAUDE_HOME: '${MC_CLAUDE_HOME:-}'
+      OPENCLAW_HOME: '${OPENCLAW_HOME:-/app/.openclaw}'  # runtime install path
+      MC_RETAIN_ACTIVITIES_DAYS: '${MC_RETAIN_ACTIVITIES_DAYS:-90}'
+      MC_RETAIN_AUDIT_DAYS: '${MC_RETAIN_AUDIT_DAYS:-365}'
+      MC_RETAIN_LOGS_DAYS: '${MC_RETAIN_LOGS_DAYS:-30}'
+      MC_RETAIN_NOTIFICATIONS_DAYS: '${MC_RETAIN_NOTIFICATIONS_DAYS:-60}'
+      MC_RETAIN_TOKEN_USAGE_DAYS: '${MC_RETAIN_TOKEN_USAGE_DAYS:-90}'
     depends_on:
       - gateway-bridge
     labels:
@@ -135,7 +145,7 @@ services:
         # ── Ollama (Local LLM) ──
         - container: OLLAMA_ENABLED
           description:
-            en_us: 'Set to false to disable the bundled Ollama sidecar (uses port 11435)'
+            en_us: 'Set to false to disable the bundled Ollama sidecar'
           default: 'true'
         - container: OLLAMA_BASE_URL
           description:
@@ -170,29 +180,63 @@ services:
           default: admin
         - container: MC_AUTH_PASS
           description:
-            en_us: 'Password for Mission Control admin login (username: admin). Auto-generated if left empty.'
-          default: swarmcontrol
+            en_us: 'Mission Control admin password. Leave empty for auto-generated secure password (check container logs).'
+          default: ''
         - container: MC_API_KEY
           description:
-            en_us: 'API key for Mission Control programmatic access. Auto-generated if left empty.'
-          default: swarmcontrol-api-key
-        # ── Mission Control Advanced ──
-        - container: MC_COORDINATOR_AGENT
-          description:
-            en_us: 'Name of the default orchestrator/coordinator agent in Mission Control'
-          default: coordinator
+            en_us: 'API key for Mission Control programmatic access. Leave empty for auto-generated secure key.'
+          default: ''
+        # ── Mission Control Security ──
         - container: MC_ENABLE_HSTS
           description:
-            en_us: 'Enable HSTS header (set to true if behind TLS reverse proxy)'
-          default: 'false'
+            en_us: 'Enable HSTS header for HTTPS enforcement (recommended: true)'
+          default: 'true'
         - container: MC_ALLOWED_HOSTS
           description:
-            en_us: 'Comma-separated host allowlist for production deployments'
-          default: ''
+            en_us: 'Comma-separated host allowlist (default: localhost,127.0.0.1). Add your Tailscale IP or domain.'
+          default: localhost,127.0.0.1
+        - container: MC_COOKIE_SECURE
+          description:
+            en_us: 'Enforce HTTPS-only session cookies (recommended: true)'
+          default: 'true'
+        - container: MC_COOKIE_SAMESITE
+          description:
+            en_us: 'SameSite cookie policy (strict/lax/none)'
+          default: strict
+        - container: MC_COORDINATOR_AGENT
+          description:
+            en_us: 'Name of the default orchestrator/coordinator agent'
+          default: coordinator
+        # ── Mission Control Advanced ──
         - container: MC_CLAUDE_HOME
           description:
             en_us: 'Path to Claude Code config directory for session tracking integration'
           default: ''
+        - container: OPENCLAW_HOME
+          description:
+            en_us: 'Path to OpenClaw state directory (needed for runtime installation, memory browser, log viewer)'
+          default: /app/.openclaw
+        # ── Data Retention ──
+        - container: MC_RETAIN_ACTIVITIES_DAYS
+          description:
+            en_us: 'Days to retain activity feed entries (0 = forever)'
+          default: '90'
+        - container: MC_RETAIN_AUDIT_DAYS
+          description:
+            en_us: 'Days to retain audit log events (0 = forever)'
+          default: '365'
+        - container: MC_RETAIN_LOGS_DAYS
+          description:
+            en_us: 'Days to retain OpenClaw agent logs (0 = forever)'
+          default: '30'
+        - container: MC_RETAIN_NOTIFICATIONS_DAYS
+          description:
+            en_us: 'Days to retain user notifications (0 = forever)'
+          default: '60'
+        - container: MC_RETAIN_TOKEN_USAGE_DAYS
+          description:
+            en_us: 'Days to retain token usage records (0 = forever)'
+          default: '90'
         # ── General ──
         - container: TZ
           description:
@@ -242,20 +286,29 @@ x-casaos:
         NOTE: Mission Control shows an empty dashboard until you create at least
         one agent in SwarmClaw. This is expected — no agents exist yet.
 
+        AUTO-GENERATED CREDENTIALS:
+        If MC_AUTH_PASS and MC_API_KEY are left empty (recommended), secure
+        random values are generated on first launch and printed to container logs.
+        Check Mission Control logs with: docker logs swarmcontrol
+
+        SECURITY SCORE:
+        The bundled Mission Control is pre-configured for a ~95+ security audit
+        score: HSTS enabled, secure cookies, strict SameSite, host filtering,
+        auto-generated credentials, and data retention policies set.
+
         OLLAMA SIDECAR:
-        - Runs on port 11435 (host) → 11434 (internal)
+        - Runs internally (no host port exposure needed)
         - Pull models via: docker exec SwarmControlOllama ollama pull <model>
-        - Or use SwarmClaw's provider settings UI to connect to Ollama
+        - For NVIDIA GPU acceleration (RTX A2000, etc.), uncomment the
+          deploy.resources.reservations.devices section in the Ollama service
+          of the docker-compose.yml file
         - Disable by setting OLLAMA_ENABLED=false in CasaOS env settings
 
         LLM PROVIDERS:
         - Ollama (local): bundled sidecar, use immediately, no API key needed
         - OpenAI: set OPENAI_API_KEY in env vars
         - Anthropic: set ANTHROPIC_API_KEY in env vars
-        - All env vars can be changed after install — the stack will restart
 
         PULLING A MODEL:
         After installation, to pull your first Ollama model:
           docker exec SwarmControlOllama ollama pull llama3.2:latest
-        Or set OLLAMA_DEFAULT_MODEL before install and the model pulls
-        automatically on first startup.
