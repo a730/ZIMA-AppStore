@@ -1,5 +1,7 @@
 name: swarm-control
+
 services:
+  # ─── SwarmClaw — AI agent runtime ───
   swarmclaw:
     container_name: SwarmClaw
     image: ghcr.io/swarmclawai/swarmclaw:latest
@@ -8,6 +10,11 @@ services:
       - "3457:3457"
     environment:
       ACCESS_KEY: '${SWARMCLAW_API_KEY:-auto}'
+      SWARMCLAW_LOG_LEVEL: '${SWARMCLAW_LOG_LEVEL:-info}'
+      SWARMCLAW_EXTENSION_FAILURE_THRESHOLD: '${SWARMCLAW_EXTENSION_FAILURE_THRESHOLD:-3}'
+      OLLAMA_BASE_URL: '${OLLAMA_BASE_URL:-http://ollama:11434}'
+      OPENAI_API_KEY: '${OPENAI_API_KEY:-}'
+      ANTHROPIC_API_KEY: '${ANTHROPIC_API_KEY:-}'
     volumes:
       - /DATA/AppData/swarm-control/swarmclaw-data:/app/data
     healthcheck:
@@ -17,6 +24,50 @@ services:
       retries: 3
       start_period: 30s
     restart: unless-stopped
+
+  # ─── Ollama — local LLM provider sidecar ───
+  ollama:
+    container_name: SwarmControlOllama
+    image: ollama/ollama:latest
+    ports:
+      - "11435:11434"
+    environment:
+      OLLAMA_KEEP_ALIVE: '${OLLAMA_KEEP_ALIVE:-5m}'
+      OLLAMA_NUM_PARALLEL: '${OLLAMA_NUM_PARALLEL:-1}'
+      OLLAMA_MAX_LOADED_MODELS: '${OLLAMA_MAX_LOADED_MODELS:-1}'
+    volumes:
+      - /DATA/AppData/swarm-control/ollama:/root/.ollama
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+    x-casaos:
+      envs:
+        - container: OLLAMA_KEEP_ALIVE
+          description:
+            en_us: 'How long Ollama keeps loaded models in memory (e.g., 5m, 1h, -1 for forever)'
+          default: 5m
+        - container: OLLAMA_NUM_PARALLEL
+          description:
+            en_us: 'Number of parallel requests Ollama processes simultaneously'
+          default: '1'
+        - container: OLLAMA_MAX_LOADED_MODELS
+          description:
+            en_us: 'Maximum number of models Ollama keeps loaded at once'
+          default: '1'
+      volumes:
+        - container: /root/.ollama
+          description:
+            en_us: Ollama model storage and configuration
+
+  # ─── Gateway Bridge — exposes SwarmClaw agents as an OpenClaw gateway ───
   gateway-bridge:
     container_name: SwarmControlBridge
     image: ghcr.io/a730/swarm-control-bridge:latest
@@ -26,13 +77,15 @@ services:
       SWARMCLAW_API_URL: 'http://swarmclaw:3456'
       SWARMCLAW_API_KEY: '${SWARMCLAW_API_KEY:-auto}'
       GATEWAY_BRIDGE_PORT: '18789'
-      AGENT_SYNC_INTERVAL_MS: '5000'
+      AGENT_SYNC_INTERVAL_MS: '${AGENT_SYNC_INTERVAL_MS:-5000}'
       MISSION_CONTROL_URL: 'http://swarmcontrol:3000'
       MISSION_CONTROL_API_KEY: '${MC_API_KEY:-swarmcontrol-api-key}'
     depends_on:
       swarmclaw:
         condition: service_healthy
     restart: unless-stopped
+
+  # ─── Mission Control — agent orchestration dashboard ───
   swarmcontrol:
     container_name: swarmcontrol
     image: ghcr.io/builderz-labs/mission-control:latest
@@ -40,15 +93,19 @@ services:
       - "3000:3000"
     environment:
       PORT: '3000'
+      TZ: '${TZ:-UTC}'
       OPENCLAW_GATEWAY_HOST: 'gateway-bridge'
       OPENCLAW_GATEWAY_PORT: '18789'
       MC_DEFAULT_GATEWAY_NAME: 'swarmclaw-bridge'
-      MC_COORDINATOR_AGENT: 'coordinator'
-      AUTH_USER: 'admin'
+      MC_COORDINATOR_AGENT: '${MC_COORDINATOR_AGENT:-coordinator}'
+      AUTH_USER: '${MC_AUTH_USER:-admin}'
       AUTH_PASS: '${MC_AUTH_PASS:-swarmcontrol}'
       API_KEY: '${MC_API_KEY:-swarmcontrol-api-key}'
       NEXT_PUBLIC_GATEWAY_URL: 'ws://localhost:18789'
       NEXT_PUBLIC_GATEWAY_OPTIONAL: 'true'
+      MC_ENABLE_HSTS: '${MC_ENABLE_HSTS:-false}'
+      MC_ALLOWED_HOSTS: '${MC_ALLOWED_HOSTS:-}'
+      MC_CLAUDE_HOME: '${MC_CLAUDE_HOME:-}'
     depends_on:
       - gateway-bridge
     labels:
@@ -66,22 +123,81 @@ services:
     restart: unless-stopped
     x-casaos:
       envs:
+        # ── LLM Provider API Keys ──
+        - container: OPENAI_API_KEY
+          description:
+            en_us: 'OpenAI API key for using GPT models in SwarmClaw agents (leave empty if using Ollama)'
+          default: ''
+        - container: ANTHROPIC_API_KEY
+          description:
+            en_us: 'Anthropic API key for using Claude models in SwarmClaw agents (leave empty if using Ollama)'
+          default: ''
+        # ── Ollama (Local LLM) ──
+        - container: OLLAMA_ENABLED
+          description:
+            en_us: 'Set to false to disable the bundled Ollama sidecar (uses port 11435)'
+          default: 'true'
+        - container: OLLAMA_BASE_URL
+          description:
+            en_us: 'URL for Ollama API (change if using an external Ollama instance)'
+          default: http://ollama:11434
+        - container: OLLAMA_DEFAULT_MODEL
+          description:
+            en_us: 'Default model to pull on first Ollama startup (e.g., llama3.2:latest, mistral, qwen2.5)'
+          default: llama3.2:latest
+        # ── SwarmClaw Runtime ──
         - container: SWARMCLAW_API_KEY
           description:
             en_us: 'API key for SwarmClaw agent runtime authentication. Auto-generated if left empty.'
           default: auto
+        - container: SWARMCLAW_LOG_LEVEL
+          description:
+            en_us: 'SwarmClaw log verbosity (debug/info/warn/error)'
+          default: info
+        - container: SWARMCLAW_EXTENSION_FAILURE_THRESHOLD
+          description:
+            en_us: 'Number of consecutive failures before an external extension is auto-disabled'
+          default: '3'
+        # ── Gateway Bridge ──
+        - container: AGENT_SYNC_INTERVAL_MS
+          description:
+            en_us: 'How often (in ms) the bridge polls SwarmClaw and syncs agents to Mission Control'
+          default: '5000'
+        # ── Mission Control Auth ──
+        - container: MC_AUTH_USER
+          description:
+            en_us: 'Mission Control admin username'
+          default: admin
         - container: MC_AUTH_PASS
           description:
-            en_us: 'Password for Mission Control admin login (username: admin).'
+            en_us: 'Password for Mission Control admin login (username: admin). Auto-generated if left empty.'
           default: swarmcontrol
         - container: MC_API_KEY
           description:
-            en_us: API key for Mission Control programmatic access.
+            en_us: 'API key for Mission Control programmatic access. Auto-generated if left empty.'
           default: swarmcontrol-api-key
-        - container: NEXT_PUBLIC_GATEWAY_URL
+        # ── Mission Control Advanced ──
+        - container: MC_COORDINATOR_AGENT
           description:
-            en_us: WebSocket URL for the gateway bridge (change host if accessing remotely).
-          default: ws://localhost:18789
+            en_us: 'Name of the default orchestrator/coordinator agent in Mission Control'
+          default: coordinator
+        - container: MC_ENABLE_HSTS
+          description:
+            en_us: 'Enable HSTS header (set to true if behind TLS reverse proxy)'
+          default: 'false'
+        - container: MC_ALLOWED_HOSTS
+          description:
+            en_us: 'Comma-separated host allowlist for production deployments'
+          default: ''
+        - container: MC_CLAUDE_HOME
+          description:
+            en_us: 'Path to Claude Code config directory for session tracking integration'
+          default: ''
+        # ── General ──
+        - container: TZ
+          description:
+            en_us: 'Timezone for all services (e.g., America/New_York, Europe/London)'
+          default: UTC
       volumes:
         - container: /app/.data
           description:
@@ -89,15 +205,16 @@ services:
         - container: /DATA/AppData/swarm-control/swarmclaw-data
           description:
             en_us: SwarmClaw agent data, memory, and configuration
+
 x-casaos:
   architectures:
     - amd64
     - arm64
   main: swarmcontrol
   description:
-    en_us: Unified AI agent swarm orchestration platform. Combines SwarmClaw agent runtime with Mission Control dashboard. Run autonomous AI agent swarms with delegation, memory, MCP tools, and real-time monitoring — all from a single dashboard.
+    en_us: 'Unified AI agent swarm orchestration platform. Combines SwarmClaw agent runtime with Ollama (local LLM), Gateway Bridge, and Mission Control dashboard. Run autonomous AI agent swarms with delegation, memory, MCP tools, and real-time monitoring — out of the box with local LLM support.'
   tagline:
-    en_us: Autonomous AI agent swarm orchestration
+    en_us: Autonomous AI agent swarm orchestration with local LLM
   developer: SwarmClaw AI + Builderz Labs
   author: a730
   icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/swarm-control/logo.png
@@ -111,8 +228,34 @@ x-casaos:
   tips:
     before_install:
       en_us: |
-        SwarmControl combines SwarmClaw (agent runtime) with Mission Control (orchestration dashboard).
-        After installation, open Mission Control at http://localhost:3000/setup to create your admin account.
-        SwarmClaw is available at http://localhost:3456.
-        All agents created in SwarmClaw (CEO, workers, sub-agents)
-        automatically appear in Mission Control via the gateway bridge.
+        SwarmControl bundles SwarmClaw (agent runtime), Ollama (local LLM sidecar),
+        Mission Control (orchestration dashboard), and Gateway Bridge.
+
+        FIRST STARTUP:
+        1. Open http://localhost:3456 (SwarmClaw)
+        2. Complete the setup wizard — Ollama is pre-configured as a local provider
+        3. Create a CEO/orchestrator agent (the "boss" agent of your swarm)
+        4. Open http://localhost:3000/setup (Mission Control)
+        5. Create your admin account
+        6. The CEO agent will automatically appear in Mission Control's dashboard
+
+        NOTE: Mission Control shows an empty dashboard until you create at least
+        one agent in SwarmClaw. This is expected — no agents exist yet.
+
+        OLLAMA SIDECAR:
+        - Runs on port 11435 (host) → 11434 (internal)
+        - Pull models via: docker exec SwarmControlOllama ollama pull <model>
+        - Or use SwarmClaw's provider settings UI to connect to Ollama
+        - Disable by setting OLLAMA_ENABLED=false in CasaOS env settings
+
+        LLM PROVIDERS:
+        - Ollama (local): bundled sidecar, use immediately, no API key needed
+        - OpenAI: set OPENAI_API_KEY in env vars
+        - Anthropic: set ANTHROPIC_API_KEY in env vars
+        - All env vars can be changed after install — the stack will restart
+
+        PULLING A MODEL:
+        After installation, to pull your first Ollama model:
+          docker exec SwarmControlOllama ollama pull llama3.2:latest
+        Or set OLLAMA_DEFAULT_MODEL before install and the model pulls
+        automatically on first startup.
