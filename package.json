@@ -1,0 +1,13 @@
+{
+  "name": "zima-appstore",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "generate-readme": "node scripts/generate-readme.js"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "yaml": "^2.7.0"
+  }
+}

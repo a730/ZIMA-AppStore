@@ -1,6 +1,4 @@
-version: "3.7"
 name: swarm-control
-
 services:
   swarmclaw:
     container_name: SwarmClaw
@@ -19,7 +17,6 @@ services:
       retries: 3
       start_period: 30s
     restart: unless-stopped
-
   gateway-bridge:
     container_name: SwarmControlBridge
     image: ghcr.io/a730/swarm-control-bridge:latest
@@ -36,7 +33,6 @@ services:
       swarmclaw:
         condition: service_healthy
     restart: unless-stopped
-
   swarmcontrol:
     container_name: swarmcontrol
     image: ghcr.io/builderz-labs/mission-control:latest
@@ -93,7 +89,6 @@ services:
         - container: /DATA/AppData/swarm-control/swarmclaw-data
           description:
             en_us: SwarmClaw agent data, memory, and configuration
-
 x-casaos:
   architectures:
     - amd64

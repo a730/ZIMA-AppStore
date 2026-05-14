@@ -1,12 +1,12 @@
 # App Store Template — Working Reference
 
-Use this template and checklist when adding a new app to avoid the issues discovered with HermesHQ.
+Use this template and checklist when adding a new app.
 
 ## Directory Structure
 
 ```
 Apps/your-app/
-├── docker-compose.yml    # REQUIRED - app manifest
+├── docker-compose.yml    # REQUIRED - app manifest (no version: key)
 ├── logo.png              # REQUIRED - app icon (square, ~256x256)
 ├── thumbnail.png         # RECOMMENDED - store thumbnail
 ├── README.md             # RECOMMENDED
@@ -22,6 +22,8 @@ Apps/your-app/
 - Add `casaos.port`, `casaos.protocol`, `casaos.entrypoint` labels on the main service
 - Include `logo.png` in the app directory
 - Make `main:` match the **service name** exactly (not container_name)
+- Use `name: your-app` at the top of the compose file (Compose V2 format, no `version:` key)
+- Use `.yml` extension (not `.yaml`)
 
 ### ❌ DON'T
 - Don't leave orphan `docker-compose.yml` files in `Apps/` root (triggers single-file mode, hides ALL apps)
@@ -30,6 +32,7 @@ Apps/your-app/
 - Don't use custom Docker networks (`networks:` block)
 - Don't skip the healthcheck
 - Don't use YAML flow sequences for env values
+- Don't include the deprecated `version:` key (Compose V2 ignores it)
 
 ## Registry Files
 
@@ -46,7 +49,6 @@ After creating the app directory, register it in these root-level JSON files:
 ## Skeleton `docker-compose.yml`
 
 ```yaml
-version: "3.7"
 name: your-app
 
 services:
@@ -133,9 +135,7 @@ x-casaos:
 ## Quick Checklist
 
 - [ ] No orphan `docker-compose.yml` in `Apps/` root
-- [ ] No orphan `.yml` files in `Apps/` root
-- [ ] No orphan `docker-compose.yml` in `Apps/` root
-- [ ] No orphan `.yml` files in `Apps/` root
+- [ ] No orphan `.yml` files without `x-casaos` in `Apps/` root
 - [ ] `healthcheck` on main service
 - [ ] `main:` matches the **service name** (not container_name)
 - [ ] All env values are quoted strings (no YAML lists)
@@ -146,5 +146,7 @@ x-casaos:
 - [ ] `port_map:` matches `casaos.port`
 - [ ] `logo.png` exists in app directory
 - [ ] `screenshot-1.png` exists and `screenshots:` in x-casaos
+- [ ] No deprecated `version:` key (Compose V2 format)
+- [ ] Uses `.yml` extension (not `.yaml`)
 - [ ] Valid YAML syntax (`python3 -c "import yaml; yaml.safe_load(open('Apps/your-app/docker-compose.yml'))"`)
 - [ ] Registered in `featured-apps.json` / `recommend-list.json` (if desired)

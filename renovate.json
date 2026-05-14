@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": ["dependencies"],
+  "automerge": false,
+  "dependencyDashboard": true,
+  "major": {
+    "labels": ["dependencies", "major"]
+  },
+  "packageRules": [
+    {
+      "description": "Update Docker images in docker-compose.yml files",
+      "matchFileNames": ["Apps/**/docker-compose.yml"],
+      "matchManagers": ["docker-compose"],
+      "groupName": "Docker images",
+      "groupSlug": "docker-images"
+    }
+  ]
+}

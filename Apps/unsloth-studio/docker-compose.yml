@@ -1,6 +1,4 @@
-version: "3.7"
 name: unsloth-studio
-
 services:
   unsloth-studio:
     container_name: unsloth-studio
@@ -25,11 +23,9 @@ services:
                 - gpu
               driver: nvidia
               count: -1
-    network_mode: bridge
     restart: unless-stopped
     x-casaos:
       volumes: []
-
 x-casaos:
   architectures:
     - amd64

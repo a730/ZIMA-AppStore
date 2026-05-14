@@ -29,6 +29,16 @@ services:
       - target: 3001
         published: 3001
         protocol: tcp
+    labels:
+      - "casaos.port=3000"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     volumes:
       - type: bind
         source: /DATA/AppData/blender/config

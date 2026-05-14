@@ -1,6 +1,4 @@
-version: "3.7"
 name: hermes-web-ui
-
 services:
   hermes-webui:
     container_name: HermesWebUI
@@ -42,7 +40,6 @@ services:
         - container: /home/agent/.hermes-web-ui
           description:
             en_us: Hermes Web UI persistent data
-
 x-casaos:
   architectures:
     - amd64

@@ -1,4 +1,3 @@
-version: "3.7"
 name: llm-scaler
 services:
   llm-scaler:
@@ -24,11 +23,9 @@ services:
                 - gpu
               driver: xpu
               count: -1
-    network_mode: bridge
     restart: unless-stopped
     x-casaos:
       volumes: []
-
 x-casaos:
   architectures:
     - amd64

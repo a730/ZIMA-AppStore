@@ -1,6 +1,4 @@
-version: "3.7"
 name: swarmclaw
-
 services:
   swarmclaw:
     container_name: SwarmClaw
@@ -33,7 +31,6 @@ services:
         - container: /app/data
           description:
             en_us: SwarmClaw agent data, memory, configuration, and SQLite database
-
 x-casaos:
   architectures:
     - amd64

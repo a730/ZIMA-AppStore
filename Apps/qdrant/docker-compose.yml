@@ -1,6 +1,4 @@
-version: "3.7"
 name: qdrant
-
 services:
   qdrant:
     container_name: Qdrant
@@ -45,7 +43,6 @@ services:
         - container: /qdrant/snapshots
           description:
             en_us: Qdrant snapshots directory
-
 x-casaos:
   architectures:
     - amd64

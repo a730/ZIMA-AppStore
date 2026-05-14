@@ -1,6 +1,4 @@
-version: "3.7"
 name: hermeshq
-
 services:
   postgres:
     container_name: hermeshq-postgres
@@ -22,7 +20,6 @@ services:
         - container: /var/lib/postgresql/data
           description:
             en_us: PostgreSQL data directory
-
   backend:
     image: ghcr.io/a730/hermeshq-backend:latest
     container_name: hermeshq-backend
@@ -70,7 +67,6 @@ services:
         - container: /app/workspaces
           description:
             en_us: Agent workspaces and data
-
   hermeshq-frontend:
     image: ghcr.io/a730/hermeshq-frontend:latest
     container_name: hermeshq-frontend
@@ -94,7 +90,6 @@ services:
         - container: VITE_API_BASE_URL
           description:
             en_us: API base URL for frontend (leave empty for auto-detect)
-
 x-casaos:
   architectures:
     - amd64

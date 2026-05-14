@@ -1,6 +1,4 @@
-version: "3.7"
 name: bookstack
-
 services:
   bookstack:
     container_name: BookStack
@@ -42,7 +40,6 @@ services:
         - container: /config
           description:
             en_us: BookStack configuration and uploads
-
   bookstack-db:
     container_name: BookStackDB
     image: lscr.io/linuxserver/mariadb:latest
@@ -72,7 +69,6 @@ services:
         - container: /config
           description:
             en_us: MariaDB data directory
-
 x-casaos:
   architectures:
     - amd64

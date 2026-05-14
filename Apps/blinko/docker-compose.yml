@@ -1,4 +1,3 @@
-version: "3.7"
 name: blinko
 services:
   blinko-website:
@@ -25,7 +24,6 @@ services:
       timeout: 10s  
       retries: 5
       start_period: 30s
-    network_mode: bridge
     restart: unless-stopped
     x-casaos:
       envs:
@@ -35,7 +33,6 @@ services:
         - container: NEXT_PUBLIC_BASE_URL
           description:
             en_us: Publicly accessible base URL for the app
-
   postgres:
     container_name: blinko-postgres
     image: postgres:14
@@ -56,7 +53,6 @@ services:
         - container: /var/lib/postgresql/data
           description:
             en_us: PostgreSQL data directory
-
 x-casaos:
   architectures:
     - amd64

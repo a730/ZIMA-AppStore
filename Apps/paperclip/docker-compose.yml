@@ -1,6 +1,4 @@
-version: "3.7"
 name: paperclip
-
 services:
   paperclip:
     container_name: Paperclip
@@ -49,7 +47,6 @@ services:
         - container: /paperclip
           description:
             en_us: 'Paperclip data directory (embedded Postgres, assets, secrets, agent workspaces)'
-
 x-casaos:
   architectures:
     - amd64

@@ -1,6 +1,4 @@
-version: "3.7"
 name: invokeai
-
 services:
   invokeai:
     container_name: InvokeAI
@@ -17,9 +15,18 @@ services:
                 - gpu
               driver: nvidia
               count: -1
-    volumes:       
+    labels:
+      - "casaos.port=9090"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
       - /DATA/AppData/invokeai:/root/.invokeai
-    network_mode: bridge
     restart: unless-stopped
     # CasaOS specific configuration for volume and port descriptions
     x-casaos:
@@ -27,13 +34,12 @@ services:
         - container: /root/.invokeai
           description:
             en_us: Container path for InvokeAI configuration and models
-
 # CasaOS specific application metadata and configurations
 x-casaos:
   architectures:
     - amd64
     - arm64
-  main: InvokeAI
+  main: invokeai
   description:
     en_us: InvokeAI is a leading creative engine for Stable Diffusion models, featuring an optimized pipeline, user-friendly interface, and advanced features for creative image generation and editing.
   tagline:
@@ -55,4 +61,3 @@ x-casaos:
       en_us: |
         Make sure you have enough disk space for models and NVIDIA drivers installed if using GPU acceleration.
         First startup may take several minutes while downloading initial models.
-

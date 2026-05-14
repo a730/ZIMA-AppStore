@@ -1,41 +1,40 @@
 # Third Party Generative AI AppStore for ZimaOS (& CasaOS)
 
-Your go-to App Store for Generative AI apps for CasaOS and ZimaOS devices like the [ZimaCube Pro](https://www.zimaboard.com/zimacube-pro) sporting a RTX A2000 GPU.
+Your go-to App Store for Generative AI apps for CasaOS and ZimaOS devices like the [ZimaCube Pro](https://www.zimaboard.com/zimacube-pro).
 
 ## Available Apps
 
 | App | Description | Category | GPU |
 |---|---|---|---|
-| [ComfyUI](https://github.com/comfyanonymous/ComfyUI) | Powerful modular Stable Diffusion GUI | Generative AI | NVidia |
-| [Invoke AI](https://github.com/invoke-ai/InvokeAI) | Professional-grade AI creation studio | Generative AI | NVidia |
-| [Blender](https://www.blender.org) | Open-source 3D creation suite | Creative Tools | Optional |
-| [Open WebUI](https://github.com/open-webui/open-webui) | Self-hosted LLM chat interface for Ollama/OpenAI | Generative AI | Optional |
-| [Unsloth Studio](https://github.com/unslothai/unsloth-studio) | No-code UI for fine-tuning LLMs 2x faster | Generative AI | NVidia |
-| [vLLM](https://github.com/vllm-project/vllm) | High-throughput LLM inference engine | AI Serving | NVidia |
-| [LLM Scaler](https://github.com/intel/llm-scaler) | Intel GenAI serving (text, image, video) | AI Serving | Intel Arc |
-| [Qdrant](https://github.com/qdrant/qdrant) | High-performance vector database for AI embeddings and search | AI Serving | No |
-| [HermesHQ](https://github.com/jpalmae/hermeshq) | Control plane for Hermes Agent instances | Agent Platforms | No |
-| [SwarmClaw](https://github.com/swarmclawai/swarmclaw) | Self-hosted AI agent runtime and multi-agent framework | Agent Platforms | No |
-| [Mission Control](https://github.com/builderz-labs/mission-control) | Dashboard for AI agent orchestration and task management | Agent Platforms | No |
-| [Paperclip](https://github.com/paperclipai/paperclip) | Orchestration platform for autonomous AI agent companies | Agent Platforms | No |
-| [Hermes Web UI](https://github.com/nicholasxuu/hermes-web-ui) | Web dashboard for Hermes Agent | Agent Platforms | No |
-| [SwarmControl](https://github.com/swarmclawai/swarmclaw) | SwarmClaw + Mission Control unified bundle | Agent Platforms | No |
-| [Open Terminal](https://github.com/open-webui/open-terminal) | Self-hosted web terminal for AI agents | Dev Tools | No |
-| [OneDev](https://github.com/theonedev/onedev) | Self-hosted Git server with CI/CD | Dev Tools | No |
-| [Coolify](https://github.com/coollabsio/coolify) | Self-hosted PaaS for apps and services | SelfHost | No |
-| [ZeroDotEmail](https://github.com/Mail-0/ZeroDotEmail) | AI-powered privacy-first email client | Communication | No |
-| [RomM](https://github.com/rommapp/romm) | Self-hosted ROM manager and player | Gaming | No |
-| [Blinko](https://github.com/blinkoapp/blinko) | Privacy-first AI note-taking and personal knowledge base | Productivity | No |
-| [BookStack](https://github.com/BookStackApp/BookStack) | Free and open-source wiki for beautiful documentation | Productivity | No |
-| [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) | Document management system with OCR and auto-tagging | Productivity | No |
-| [CNCjs](https://github.com/cncjs/cncjs) | Web-based CNC controller | Maker Tools | No |
+| [ComfyUI](https://github.com/comfyanonymous/ComfyUI) | A powerful and modular stable diffusion GUI | Generative AI | NVidia |
+| [InvokeAI](https://github.com/search?q=invoke-ai&type=repositories) | Advanced Stable Diffusion Interface | Generative AI | NVidia |
+| [LLM Scaler](https://github.com/search?q=intel&type=repositories) | Intel Arc optimized LLM scaling | Generative AI | NVidia |
+| [Open WebUI](https://github.com/search?q=open-webui&type=repositories) | Interface for your local LLMs | Generative AI | NVidia |
+| [Unsloth Studio](https://github.com/search?q=unsloth&type=repositories) | Efficient LLM fine-tuning and deployment | Generative AI | NVidia |
+| [vLLM (AVX2 + OpenVINO)](https://github.com/search?q=vllm-project&type=repositories) | High-throughput LLM serving (AVX2 + OpenVINO) | Generative AI | NVidia |
+| [Qdrant](https://github.com/qdrant/qdrant) | High-performance vector database for AI | AI Serving | NVidia |
+| [Hermes Web UI](https://github.com/search?q=EKKOLearnAI&type=repositories) | Web dashboard for Hermes Agent | Agent Platforms | No |
+| [HermesHQ](https://github.com/search?q=jpalmae&type=repositories) | Control plane for Hermes Agent instances | Agent Platforms | No |
+| [Mission Control](https://github.com/search?q=Builderz%20Labs&type=repositories) | AI agent orchestration dashboard | Agent Platforms | No |
+| [Paperclip](https://github.com/search?q=Paperclip%20AI&type=repositories) | AI agent company orchestration platform | Agent Platforms | No |
+| [SwarmClaw](https://github.com/search?q=SwarmClaw%20AI&type=repositories) | Self-hosted AI agent runtime and multi-agent framework | Agent Platforms | No |
+| [SwarmControl](https://github.com/search?q=SwarmClaw%20AI%20%2B%20Builderz%20Labs&type=repositories) | Autonomous AI agent swarm orchestration | Agent Platforms | No |
+| [Blinko](https://github.com/blinkospace/blinko) | Privacy-first AI note-taking and knowledge base | Productivity | No |
+| [BookStack](https://github.com/BookStackApp/BookStack) | Self-hosted documentation wiki | Productivity | No |
+| [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) | Document management system with OCR | Productivity | No |
+| [Coolify](https://github.com/search?q=coollabsio&type=repositories) | Coolify | SelfHost | No |
+| [ZeroDotEmail](https://github.com/search?q=Mail-0&type=repositories) | AI-powered, privacy-first email client | Communication | No |
+| [Blender](https://www.blender.org) | A free and open-source 3D computer graphics software toolset used for creating animated films, visual effects, art, 3D printed models, motion graphics, interactive 3D applications, virtual reality, and computer games. This image does not support GPU rendering out of the box only accelerated workspace experience | LinuxServer.io | No |
+| [CNCjs](https://github.com/search?q=cncjs&type=repositories) | Web-based CNC milling controller interface | Makerspace | No |
+| [OneDev](https://github.com/search?q=onedev&type=repositories) | All-in-one DevOps platform | Development | No |
+| [Open Terminal](https://github.com/search?q=open-webui&type=repositories) | Secure web-based terminal | Utilities | No |
+| [RomM](https://github.com/search?q=romm&type=repositories) | Beautiful ROM manager | Games | No |
 
 ## Quick Start
 
 1. Install [CasaOS](https://casaos.io) or [ZimaOS](https://www.zimaboard.com/zimacube-pro) on your device
 2. Add this app store via the CasaOS/ZimaOS App Store settings
 3. Browse and install any app with one click
-4. Apps with GPU support will automatically leverage your NVIDIA or Intel Arc GPU
 
 ## Hardware Requirements
 

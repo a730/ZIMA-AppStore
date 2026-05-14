@@ -1,6 +1,4 @@
-version: "3.7"
 name: paperless-ngx
-
 services:
   webserver:
     container_name: PaperlessNGX
@@ -70,7 +68,6 @@ services:
         - container: /usr/src/paperless/consume
           description:
             en_us: Consumption directory (drop documents here to auto-import)
-
   broker:
     container_name: PaperlessBroker
     image: docker.io/library/redis:8
@@ -87,7 +84,6 @@ services:
         - container: /data
           description:
             en_us: Redis data directory
-
   db:
     container_name: PaperlessDB
     image: docker.io/library/postgres:18
@@ -108,7 +104,6 @@ services:
         - container: /var/lib/postgresql/data
           description:
             en_us: PostgreSQL data directory
-
 x-casaos:
   architectures:
     - amd64
