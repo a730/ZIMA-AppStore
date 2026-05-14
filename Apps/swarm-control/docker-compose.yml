@@ -85,6 +85,12 @@ services:
     depends_on:
       swarmclaw:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18789"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     restart: unless-stopped
 
   # ─── Mission Control — agent orchestration dashboard ───
@@ -101,8 +107,6 @@ services:
       MC_DEFAULT_GATEWAY_NAME: 'swarmclaw-bridge'
       MC_COORDINATOR_AGENT: '${MC_COORDINATOR_AGENT:-coordinator}'
       AUTH_USER: '${MC_AUTH_USER:-admin}'
-      AUTH_PASS: '${MC_AUTH_PASS:-}'                   # empty = auto-generated on first launch
-      API_KEY: '${MC_API_KEY:-}'                       # empty = auto-generated on first launch
       NEXT_PUBLIC_GATEWAY_URL: 'ws://localhost:18789'
       NEXT_PUBLIC_GATEWAY_OPTIONAL: 'true'
       MC_ENABLE_HSTS: '${MC_ENABLE_HSTS:-true}'         # enable HSTS for security scan
@@ -110,14 +114,15 @@ services:
       MC_COOKIE_SECURE: '${MC_COOKIE_SECURE:-true}'     # HTTPS-only cookies
       MC_COOKIE_SAMESITE: '${MC_COOKIE_SAMESITE:-strict}' # strict SameSite
       MC_CLAUDE_HOME: '${MC_CLAUDE_HOME:-}'
-      OPENCLAW_HOME: '${OPENCLAW_HOME:-/app/.openclaw}'  # runtime install path
+      OPENCLAW_HOME: '${OPENCLAW_HOME:-/app/.data/.openclaw}'  # runtime install path
       MC_RETAIN_ACTIVITIES_DAYS: '${MC_RETAIN_ACTIVITIES_DAYS:-90}'
       MC_RETAIN_AUDIT_DAYS: '${MC_RETAIN_AUDIT_DAYS:-365}'
       MC_RETAIN_LOGS_DAYS: '${MC_RETAIN_LOGS_DAYS:-30}'
       MC_RETAIN_NOTIFICATIONS_DAYS: '${MC_RETAIN_NOTIFICATIONS_DAYS:-60}'
       MC_RETAIN_TOKEN_USAGE_DAYS: '${MC_RETAIN_TOKEN_USAGE_DAYS:-90}'
     depends_on:
-      - gateway-bridge
+      gateway-bridge:
+        condition: service_healthy
     labels:
       - "casaos.port=3000"
       - "casaos.protocol=http"
@@ -215,7 +220,7 @@ services:
         - container: OPENCLAW_HOME
           description:
             en_us: 'Path to OpenClaw state directory (needed for runtime installation, memory browser, log viewer)'
-          default: /app/.openclaw
+          default: /app/.data/.openclaw
         # ── Data Retention ──
         - container: MC_RETAIN_ACTIVITIES_DAYS
           description:
@@ -287,14 +292,17 @@ x-casaos:
         one agent in SwarmClaw. This is expected — no agents exist yet.
 
         AUTO-GENERATED CREDENTIALS:
-        If MC_AUTH_PASS and MC_API_KEY are left empty (recommended), secure
-        random values are generated on first launch and printed to container logs.
-        Check Mission Control logs with: docker logs swarmcontrol
+        MC_AUTH_PASS and MC_API_KEY are not set by default. Mission Control
+        auto-generates secure random values on first launch and prints them
+        to container logs. Check with: docker logs swarmcontrol
+        To set custom credentials, fill in MC_AUTH_PASS and MC_API_KEY
+        in the CasaOS app settings before starting.
 
         SECURITY SCORE:
         The bundled Mission Control is pre-configured for a ~95+ security audit
         score: HSTS enabled, secure cookies, strict SameSite, host filtering,
-        auto-generated credentials, and data retention policies set.
+        auto-generated credentials (not weak defaults), and data retention
+        policies set.
 
         OLLAMA SIDECAR:
         - Runs internally (no host port exposure needed)
