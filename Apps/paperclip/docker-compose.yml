@@ -2,7 +2,7 @@ name: paperclip
 services:
   paperclip:
     container_name: Paperclip
-    image: ghcr.io/paperclipai/paperclip:latest
+    image: ghcr.io/paperclipai/paperclip:2026.513.0
     ports:
       - "3101:3101"
     environment:
