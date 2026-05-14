@@ -4,9 +4,9 @@ services:
     container_name: vllm
     build: .
     ports:
-      - "8000:8000"
+      - "8003:8000"
     labels:
-      - "casaos.port=8000"
+      - "casaos.port=8003"
       - "casaos.protocol=http"
       - "casaos.entrypoint=/v1/completions"
     healthcheck:
@@ -65,7 +65,7 @@ x-casaos:
   title:
     en_us: vLLM (AVX2 + OpenVINO)
   category: Generative AI
-  port_map: "8000"
+  port_map: "8003"
   scheme: http
   index: /
   screenshots:

@@ -4,9 +4,9 @@ services:
     container_name: romm
     image: rommapp/romm:latest
     ports:
-      - "8080:8080"
+      - "8083:8080"
     labels:
-      - "casaos.port=8080"
+      - "casaos.port=8083"
       - "casaos.protocol=http"
       - "casaos.entrypoint=/"
     healthcheck:
@@ -46,7 +46,7 @@ x-casaos:
   title:
     en_us: RomM
   category: Games
-  port_map: "8080"
+  port_map: "8083"
   scheme: http
   index: /
   screenshots:

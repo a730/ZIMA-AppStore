@@ -5,7 +5,7 @@ services:
     image: darweb/zerodotmail:latest
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3008:3000"
     environment:
       WEBUI_PORT: 3000
       NEXT_PUBLIC_APP_URL: http://<your-ip>:3000
@@ -27,7 +27,7 @@ services:
       GROQ_API_KEY: ""
       GOOGLE_GENERATIVE_AI_API_KEY: ""
     labels:
-      - "casaos.port=3000"
+      - "casaos.port=3008"
       - "casaos.protocol=http"
       - "casaos.entrypoint=/"
     healthcheck:
@@ -87,8 +87,6 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: zerodotemail
       PGDATA: /var/lib/postgresql/data/pgdata
-    ports:
-      - "5432:5432"
     volumes:
       - /DATA/AppData/ZeroDotEmail/postgres-data:/var/lib/postgresql/data
   valkey:
@@ -98,8 +96,6 @@ services:
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
       VALKEY_DISABLE_COMMANDS: FLUSHDB,FLUSHALL
-    ports:
-      - "6379:6379"
     volumes:
       - /DATA/AppData/ZeroDotEmail/valkey-data:/bitnami/valkey/data
   upstash-proxy:
@@ -128,7 +124,7 @@ x-casaos:
   icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/zerodotemail/logo.png
   thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/zerodotemail/thumbnail.png
   category: Communication
-  port_map: "3000"
+  port_map: "3008"
   scheme: http
   index: /
   screenshots:

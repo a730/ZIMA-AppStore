@@ -42,7 +42,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
-      - "8000:8000"
+      - "8006:8000"
     restart: unless-stopped
     deploy:
       resources:

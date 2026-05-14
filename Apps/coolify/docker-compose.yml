@@ -298,8 +298,6 @@ services:
   zimaos-coolify-postgres:
     container_name: zimaos-coolify-postgres
     image: postgres:15-alpine
-    ports:
-      - "5432:5432"
     volumes:
       - /DATA/AppData/$AppID/pgdata:/var/lib/postgresql/data
     environment:
@@ -334,8 +332,6 @@ services:
   zimaos-coolify-redis: # Redis service configuration
     container_name: zimaos-coolify-redis # Name of the running container
     image: redis:alpine
-    ports:
-      - "6379:6379"
     command:
       [
         "redis-server",
