@@ -7,6 +7,8 @@ on:
       - 'Apps/swarm-control/bridge/**'
       - '.github/workflows/publish-swarm-control-bridge.yml'
   workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 0'  # weekly rebuild to pick up upstream changes
 
 env:
   REGISTRY: ghcr.io

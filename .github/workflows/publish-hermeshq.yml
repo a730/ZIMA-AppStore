@@ -6,6 +6,8 @@ on:
     paths:
       - 'Apps/hermeshq/**'
   workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 0'  # weekly rebuild to pick up upstream changes
 
 env:
   REGISTRY: ghcr.io
