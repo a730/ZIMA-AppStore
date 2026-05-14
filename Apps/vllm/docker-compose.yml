@@ -3,7 +3,7 @@ name: vllm
 services:
   vllm:
     container_name: vllm
-    image: ghcr.io/a730/vllm-cpu:latest
+    build: .
     ports:
       - "8000:8000"
     labels:
