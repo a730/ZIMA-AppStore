@@ -1,0 +1,92 @@
+name: mango
+
+services:
+  mango:
+    container_name: mango
+    image: ghcr.io/a730/mango:latest
+    ports:
+      - "9000:9000"
+    labels:
+      - "casaos.port=9000"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    environment:
+      PORT: '9000'
+    depends_on:
+      - anime-middleware
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - NET_BIND_SERVICE
+      - FOWNER
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "1.0"
+    volumes:
+      - /DATA/AppData/Mango/library:/home/mango/mango
+      - /DATA/AppData/Mango/config:/home/mango/.config/mango
+    restart: unless-stopped
+    x-casaos:
+      envs:
+        - container: PORT
+          description:
+            en_us: Port for the Mango web interface
+      volumes:
+        - container: /home/mango/mango
+          description:
+            en_us: Manga library directory
+        - container: /home/mango/.config/mango
+          description:
+            en_us: Mango configuration directory
+
+  anime-middleware:
+    container_name: anime-middleware
+    image: ghcr.io/a730/mango-anime-middleware:latest
+    expose:
+      - "3456"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
+    restart: unless-stopped
+    x-casaos:
+      volumes: []
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: mango
+  description:
+    en_us: Mango is a self-hosted manga server and web reader with built-in anime streaming and manga search. Supports local CBZ/ZIP/CBR libraries, OPDS, multi-user, and online content browsing from ComicK, MangaDex, AnimeKai and more.
+  tagline:
+    en_us: Self-hosted manga server and web reader with anime streaming
+  developer: a730
+  author: a730
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/mango/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/mango/logo.png
+  title:
+    en_us: Mango
+  category: Entertainment
+  port_map: "9000"
+  scheme: http
+  index: /

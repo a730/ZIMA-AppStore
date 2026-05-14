@@ -43,7 +43,7 @@ Every app is scanned for critical/high CVEs using Trivy on each CI run.
 | [Mission Control](https://github.com/search?q=Builderz%20Labs&type=repositories) | AI agent orchestration dashboard | Agent Platforms | No |
 | [Paperclip](https://github.com/search?q=Paperclip%20AI&type=repositories) | AI agent company orchestration platform | Agent Platforms | No |
 | [SwarmClaw](https://github.com/search?q=SwarmClaw%20AI&type=repositories) | Self-hosted AI agent runtime and multi-agent framework | Agent Platforms | No |
-| [SwarmControl](https://github.com/search?q=SwarmClaw%20AI%20%2B%20Builderz%20Labs&type=repositories) | Autonomous AI agent swarm orchestration | Agent Platforms | No |
+| [SwarmControl](https://github.com/search?q=SwarmClaw%20AI%20%2B%20Builderz%20Labs&type=repositories) | Autonomous AI agent swarm orchestration with local LLM | Agent Platforms | No |
 | [Blinko](https://github.com/blinkospace/blinko) | Privacy-first AI note-taking and knowledge base | Productivity | No |
 | [BookStack](https://github.com/BookStackApp/BookStack) | Self-hosted documentation wiki | Productivity | No |
 | [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) | Document management system with OCR | Productivity | No |
@@ -53,6 +53,7 @@ Every app is scanned for critical/high CVEs using Trivy on each CI run.
 | [MusicBrainz Picard](https://github.com/search?q=jlesage&type=repositories) | Cross-platform music tagger with web GUI | Creative Tools | No |
 | [Blender](https://www.blender.org) | A free and open-source 3D computer graphics software toolset used for creating animated films, visual effects, art, 3D printed models, motion graphics, interactive 3D applications, virtual reality, and computer games. This image does not support GPU rendering out of the box only accelerated workspace experience | LinuxServer.io | No |
 | [CNCjs](https://github.com/search?q=cncjs&type=repositories) | Web-based CNC milling controller interface | Makerspace | No |
+| [Mango](https://github.com/search?q=a730&type=repositories) | Self-hosted manga server and web reader with anime streaming | Entertainment | No |
 | [OneDev](https://github.com/search?q=onedev&type=repositories) | All-in-one DevOps platform | Development | No |
 | [Open Terminal](https://github.com/search?q=open-webui&type=repositories) | Secure web-based terminal | Utilities | No |
 | [RomM](https://github.com/search?q=romm&type=repositories) | Beautiful ROM manager | Games | No |
