@@ -36,6 +36,3 @@ jobs:
           context: Apps/vllm
           push: true
           tags: ghcr.io/a730/vllm-cpu:latest
-          build-args: |
-            VLLM_VERSION=v0.8.4
-            MAX_JOBS=16

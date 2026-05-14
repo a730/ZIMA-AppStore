@@ -1,22 +1,37 @@
+FROM python:3.12-slim AS builder
+
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    ca-certificates \
+    build-essential \
+    python3-dev \
+    cmake \
+    ninja-build \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --upgrade pip
+
+RUN git clone https://github.com/vllm-project/vllm.git /src \
+    && cd /src \
+    && git checkout v0.8.4
+
+RUN cd /src \
+    && VLLM_TARGET_DEVICE=openvino \
+       PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu \
+       pip install -v . --no-cache-dir
+
+RUN python3 -m pip uninstall -y triton 2>/dev/null; exit 0
+
 FROM python:3.12-slim
 
 RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
-    git \
-    build-essential \
-    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip
-
-ENV VLLM_TARGET_DEVICE=openvino
-ENV PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu
-
-RUN VLLM_TARGET_DEVICE=openvino PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu \
-    pip install --no-cache-dir vllm==0.8.4
-
-RUN python3 -m pip uninstall -y triton 2>/dev/null; exit 0
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 ENV VLLM_OPENVINO_DEVICE=CPU
 ENV VLLM_CPU_KVCACHE_SPACE=40
