@@ -2,6 +2,30 @@
 
 Your go-to App Store for Generative AI apps for CasaOS and ZimaOS devices like the [ZimaCube Pro](https://www.zimaboard.com/zimacube-pro).
 
+## Security & Compliance
+
+Every app in this store passes automated security hardening checks in CI:
+
+| Check | What it prevents |
+|-------|------------------|
+| Hardcoded secrets | Passwords, API keys, and tokens must use `${VAR}` env patterns, not literal values |
+| Privileged containers | Flags apps running with unrestricted host access (`privileged: true`) |
+| Exposed database ports | DB ports (5432, 6379, 3306) flagged if exposed to the host LAN unnecessarily |
+| `:latest` image tags | Pinned version tags required for reproducible deployments |
+| Missing resource limits | CPU/memory limits checked on every main service |
+| Capability hardening | Verifies `cap_drop: ALL` when `cap_add` is used |
+| `no-new-privileges` | Checks `security_opt: no-new-privileges:true` is set |
+
+**Business-grade apps** (compliance.yaml + SECURITY.md) additionally document:
+- Data storage locations, encryption, and retention policies
+- Network egress (telemetry, update checks, external API calls)
+- Authentication methods (local accounts, SSO, MFA)
+- Backup strategies and audit logging capabilities
+- Supply chain (SBOM, base image, CVE tracking)
+- Known CVEs and security recommendations
+
+Every app is scanned for critical/high CVEs using Trivy on each CI run.
+
 ## Available Apps
 
 | App | Description | Category | GPU |
