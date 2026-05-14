@@ -86,7 +86,7 @@ services:
       swarmclaw:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:18789"]
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/18789"]
       interval: 15s
       timeout: 5s
       retries: 5
