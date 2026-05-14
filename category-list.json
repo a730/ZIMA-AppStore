@@ -48,5 +48,15 @@
     "name": "Paperclip",
     "font": "paperclip",
     "description": "Agent Platforms"
+  },
+  {
+    "name": "BookStack",
+    "font": "bookstack",
+    "description": "Productivity"
+  },
+  {
+    "name": "Paperless-ngx",
+    "font": "paperless-ngx",
+    "description": "Productivity"
   }
 ]

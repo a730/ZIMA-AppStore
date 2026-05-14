@@ -1,0 +1,137 @@
+version: "3.7"
+name: paperless-ngx
+
+services:
+  webserver:
+    container_name: PaperlessNGX
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    ports:
+      - "8002:8000"
+    environment:
+      PAPERLESS_REDIS: 'redis://broker:6379'
+      PAPERLESS_DBHOST: 'db'
+      PAPERLESSS_DBUSER: 'paperless'
+      PAPERLESS_DBPASS: '${DB_PASS:-paperless}'
+      PAPERLESS_DBNAME: 'paperless'
+      PAPERLESS_SECRET_KEY: '${PAPERLESS_SECRET_KEY:-}'
+      PAPERLESS_TIME_ZONE: '${TZ:-UTC}'
+      PAPERLESS_OCR_LANGUAGE: '${OCR_LANG:-eng}'
+      USERMAP_UID: '1000'
+      USERMAP_GID: '1000'
+    volumes:
+      - /DATA/AppData/paperless-ngx/data:/usr/src/paperless/data
+      - /DATA/AppData/paperless-ngx/media:/usr/src/paperless/media
+      - /DATA/AppData/paperless-ngx/export:/usr/src/paperless/export
+      - /DATA/AppData/paperless-ngx/consume:/usr/src/paperless/consume
+    labels:
+      - "casaos.port=8002"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    depends_on:
+      db:
+        condition: service_healthy
+      broker:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    x-casaos:
+      envs:
+        - container: PAPERLESS_SECRET_KEY
+          description:
+            en_us: 'Secret key for Django. Generate a random string (e.g., openssl rand -hex 32).'
+          default: ''
+        - container: DB_PASS
+          description:
+            en_us: 'PostgreSQL password'
+          default: paperless
+        - container: TZ
+          description:
+            en_us: 'Time zone (e.g., America/New_York, Europe/London)'
+          default: UTC
+        - container: OCR_LANG
+          description:
+            en_us: 'OCR language code (e.g., eng, deu, fra)'
+          default: eng
+      volumes:
+        - container: /usr/src/paperless/data
+          description:
+            en_us: Paperless data directory
+        - container: /usr/src/paperless/media
+          description:
+            en_us: Media files (documents, thumbnails)
+        - container: /usr/src/paperless/export
+          description:
+            en_us: Export directory
+        - container: /usr/src/paperless/consume
+          description:
+            en_us: Consumption directory (drop documents here to auto-import)
+
+  broker:
+    container_name: PaperlessBroker
+    image: docker.io/library/redis:8
+    restart: unless-stopped
+    volumes:
+      - /DATA/AppData/paperless-ngx/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    x-casaos:
+      volumes:
+        - container: /data
+          description:
+            en_us: Redis data directory
+
+  db:
+    container_name: PaperlessDB
+    image: docker.io/library/postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: 'paperless'
+      POSTGRES_USER: 'paperless'
+      POSTGRES_PASSWORD: '${DB_PASS:-paperless}'
+    volumes:
+      - /DATA/AppData/paperless-ngx/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paperless -d paperless"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    x-casaos:
+      volumes:
+        - container: /var/lib/postgresql/data
+          description:
+            en_us: PostgreSQL data directory
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: webserver
+  description:
+    en_us: 'Paperless-ngx is a document management system that transforms your physical documents into a searchable online archive. It performs OCR on scanned documents, automatically tags and categorizes them, and provides a powerful search interface.'
+  tagline:
+    en_us: Document management system with OCR
+  developer: paperless-ngx
+  author: a730
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/paperless-ngx/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/paperless-ngx/thumbnail.png
+  title:
+    en_us: Paperless-ngx
+  category: Productivity
+  port_map: "8002"
+  scheme: http
+  index: /
+  tips:
+    before_install:
+      en_us: |
+        Paperless-ngx runs with PostgreSQL and Redis.
+        After installation, open http://localhost:8002 and create a superuser account.
+        Drop documents into the consume folder (/DATA/AppData/paperless-ngx/consume) to auto-import them.
+        You MUST set PAPERLESS_SECRET_KEY to a random string (generate with: openssl rand -hex 32).

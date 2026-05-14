@@ -25,6 +25,8 @@ Your go-to App Store for Generative AI apps for CasaOS and ZimaOS devices like t
 | [ZeroDotEmail](https://github.com/Mail-0/ZeroDotEmail) | AI-powered privacy-first email client | Communication | No |
 | [RomM](https://github.com/rommapp/romm) | Self-hosted ROM manager and player | Gaming | No |
 | [Blinko](https://github.com/blinkoapp/blinko) | Privacy-first AI note-taking and personal knowledge base | Productivity | No |
+| [BookStack](https://github.com/BookStackApp/BookStack) | Free and open-source wiki for beautiful documentation | Productivity | No |
+| [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) | Document management system with OCR and auto-tagging | Productivity | No |
 | [CNCjs](https://github.com/cncjs/cncjs) | Web-based CNC controller | Maker Tools | No |
 
 ## Quick Start
