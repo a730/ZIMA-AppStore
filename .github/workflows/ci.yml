@@ -31,7 +31,12 @@ jobs:
         run: |
           for f in Apps/*/docker-compose.yml; do
             echo "Validating $f..."
-            python3 -c "import yaml; yaml.safe_load(open('$f')); print('  OK')"
+            node -e "
+              const yaml = require('yaml');
+              const fs = require('fs');
+              yaml.parse(fs.readFileSync('$f', 'utf8'));
+              console.log('  OK');
+            "
           done
 
       - name: Run app validation tests
