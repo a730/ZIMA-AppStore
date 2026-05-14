@@ -30,6 +30,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Generate date version
+        id: date
+        run: echo "version=v$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+
       - name: Build and push Backend
         uses: docker/build-push-action@v5
         with:
@@ -39,6 +43,7 @@ jobs:
           tags: |
             ghcr.io/a730/hermeshq-backend:latest
             ${{ github.ref_type == 'tag' && format('ghcr.io/a730/hermeshq-backend:{0}', github.ref_name) || '' }}
+            ${{ github.event_name == 'schedule' && format('ghcr.io/a730/hermeshq-backend:{0}', steps.date.outputs.version) || '' }}
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
@@ -50,3 +55,4 @@ jobs:
           tags: |
             ghcr.io/a730/hermeshq-frontend:latest
             ${{ github.ref_type == 'tag' && format('ghcr.io/a730/hermeshq-frontend:{0}', github.ref_name) || '' }}
+            ${{ github.event_name == 'schedule' && format('ghcr.io/a730/hermeshq-frontend:{0}', steps.date.outputs.version) || '' }}

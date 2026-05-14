@@ -35,6 +35,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Generate date version
+        id: date
+        run: echo "version=v$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+
       - name: Build and push Gateway Bridge
         uses: docker/build-push-action@v5
         with:
@@ -45,3 +49,4 @@ jobs:
             ghcr.io/a730/swarm-control-bridge:latest
             ghcr.io/a730/swarm-control-bridge:${{ github.sha }}
             ${{ github.ref_type == 'tag' && format('ghcr.io/a730/swarm-control-bridge:{0}', github.ref_name) || '' }}
+            ${{ github.event_name == 'schedule' && format('ghcr.io/a730/swarm-control-bridge:{0}', steps.date.outputs.version) || '' }}

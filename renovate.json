@@ -16,6 +16,18 @@
       "matchManagers": ["docker-compose"],
       "groupName": "Docker images",
       "groupSlug": "docker-images"
+    },
+    {
+      "description": "Use date-based versioning for a730 custom images",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "ghcr.io/a730/hermes-web-ui",
+        "ghcr.io/a730/hermeshq-backend",
+        "ghcr.io/a730/hermeshq-frontend",
+        "ghcr.io/a730/swarm-control-bridge",
+        "ghcr.io/a730/vllm-cpu"
+      ],
+      "versioning": "regex:^v(?<major>\\d{8})$"
     }
   ]
 }

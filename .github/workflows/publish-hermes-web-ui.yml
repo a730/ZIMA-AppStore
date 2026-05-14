@@ -36,6 +36,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Generate date version
+        id: date
+        run: echo "version=v$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -47,3 +51,4 @@ jobs:
             ghcr.io/a730/hermes-web-ui:latest
             ghcr.io/a730/hermes-web-ui:${{ github.sha }}
             ${{ github.ref_type == 'tag' && format('ghcr.io/a730/hermes-web-ui:{0}', github.ref_name) || '' }}
+            ${{ github.event_name == 'schedule' && format('ghcr.io/a730/hermes-web-ui:{0}', steps.date.outputs.version) || '' }}
