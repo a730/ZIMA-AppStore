@@ -50,6 +50,21 @@
     "description": "Agent Platforms"
   },
   {
+    "name": "HandBrake",
+    "font": "handbrake",
+    "description": "Creative Tools"
+  },
+  {
+    "name": "MCPHub",
+    "font": "mcphub",
+    "description": "Agent Platforms"
+  },
+  {
+    "name": "MusicBrainz Picard",
+    "font": "musicbrainz-picard",
+    "description": "Creative Tools"
+  },
+  {
     "name": "BookStack",
     "font": "bookstack",
     "description": "Productivity"

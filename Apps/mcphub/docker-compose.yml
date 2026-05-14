@@ -1,0 +1,61 @@
+name: mcphub
+
+services:
+  mcphub:
+    container_name: MCPHub
+    image: samanhappy/mcphub:latest
+    ports:
+      - "3010:3000"
+    environment:
+      ADMIN_PASSWORD: '${MCPHUB_PASSWORD:-}'
+    volumes:
+      - /DATA/AppData/mcphub/data:/app/data
+    labels:
+      - "casaos.port=3010"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+    x-casaos:
+      envs:
+        - container: MCPHUB_PASSWORD
+          description:
+            en_us: 'Admin password for the dashboard. Auto-generated on first launch if left empty (check container logs).'
+          default: ''
+      volumes:
+        - container: /app/data
+          description:
+            en_us: MCPHub persistent data (server configs, database)
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: mcphub
+  description:
+    en_us: 'MCPHub is a unified hub server that consolidates multiple MCP (Model Context Protocol) servers into a single SSE endpoint. Centralized dashboard for monitoring, adding, and managing MCP servers with smart routing, hot-swappable config, and OAuth 2.0 support.'
+  tagline:
+    en_us: Unified hub for MCP server management
+  developer: samanhappy
+  author: a730
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/mcphub/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/mcphub/thumbnail.png
+  title:
+    en_us: MCPHub
+  category: Agent Platforms
+  port_map: "3010"
+  scheme: http
+  index: /
+  tips:
+    before_install:
+      en_us: |
+        MCPHub centralizes multiple MCP servers into one SSE endpoint.
+        Open http://localhost:3010 and log in with username "admin".
+        If ADMIN_PASSWORD is left empty, a random password is generated
+        on first launch and printed to the container logs.
+        SSE endpoint: http://localhost:3010/sse

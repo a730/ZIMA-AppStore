@@ -2,30 +2,6 @@
 
 Your go-to App Store for Generative AI apps for CasaOS and ZimaOS devices like the [ZimaCube Pro](https://www.zimaboard.com/zimacube-pro).
 
-## Security & Compliance
-
-Every app in this store passes automated security hardening checks in CI:
-
-| Check | What it prevents |
-|-------|------------------|
-| Hardcoded secrets | Passwords, API keys, and tokens must use `\${VAR}` env patterns, not literal values |
-| Privileged containers | Flags apps running with unrestricted host access (`privileged: true`) |
-| Exposed database ports | DB ports (5432, 6379, 3306) flagged if exposed to the host LAN unnecessarily |
-| `:latest` image tags | Pinned version tags required for reproducible deployments |
-| Missing resource limits | CPU/memory limits checked on every main service |
-| Capability hardening | Verifies `cap_drop: ALL` when `cap_add` is used |
-| `no-new-privileges` | Checks `security_opt: no-new-privileges:true` is set |
-
-**Business-grade apps** (compliance.yaml + SECURITY.md) additionally document:
-- Data storage locations, encryption, and retention policies
-- Network egress (telemetry, update checks, external API calls)
-- Authentication methods (local accounts, SSO, MFA)
-- Backup strategies and audit logging capabilities
-- Supply chain (SBOM, base image, CVE tracking)
-- Known CVEs and security recommendations
-
-Every app is scanned for critical/high CVEs using Trivy on each CI run.
-
 ## Available Apps
 
 | App | Description | Category | GPU |
@@ -39,6 +15,7 @@ Every app is scanned for critical/high CVEs using Trivy on each CI run.
 | [Qdrant](https://github.com/qdrant/qdrant) | High-performance vector database for AI | AI Serving | NVidia |
 | [Hermes Web UI](https://github.com/search?q=EKKOLearnAI&type=repositories) | Web dashboard for Hermes Agent | Agent Platforms | No |
 | [HermesHQ](https://github.com/search?q=jpalmae&type=repositories) | Control plane for Hermes Agent instances | Agent Platforms | No |
+| [MCPHub](https://github.com/search?q=samanhappy&type=repositories) | Unified hub for MCP server management | Agent Platforms | No |
 | [Mission Control](https://github.com/search?q=Builderz%20Labs&type=repositories) | AI agent orchestration dashboard | Agent Platforms | No |
 | [Paperclip](https://github.com/search?q=Paperclip%20AI&type=repositories) | AI agent company orchestration platform | Agent Platforms | No |
 | [SwarmClaw](https://github.com/search?q=SwarmClaw%20AI&type=repositories) | Self-hosted AI agent runtime and multi-agent framework | Agent Platforms | No |
@@ -48,6 +25,8 @@ Every app is scanned for critical/high CVEs using Trivy on each CI run.
 | [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) | Document management system with OCR | Productivity | No |
 | [Coolify](https://github.com/search?q=coollabsio&type=repositories) | Coolify | SelfHost | No |
 | [ZeroDotEmail](https://github.com/search?q=Mail-0&type=repositories) | AI-powered, privacy-first email client | Communication | No |
+| [HandBrake](https://github.com/search?q=LinuxServer.io&type=repositories) | Open-source video transcoder with web GUI | Creative Tools | No |
+| [MusicBrainz Picard](https://github.com/search?q=jlesage&type=repositories) | Cross-platform music tagger with web GUI | Creative Tools | No |
 | [Blender](https://www.blender.org) | A free and open-source 3D computer graphics software toolset used for creating animated films, visual effects, art, 3D printed models, motion graphics, interactive 3D applications, virtual reality, and computer games. This image does not support GPU rendering out of the box only accelerated workspace experience | LinuxServer.io | No |
 | [CNCjs](https://github.com/search?q=cncjs&type=repositories) | Web-based CNC milling controller interface | Makerspace | No |
 | [OneDev](https://github.com/search?q=onedev&type=repositories) | All-in-one DevOps platform | Development | No |

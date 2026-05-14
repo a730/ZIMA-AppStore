@@ -1,0 +1,71 @@
+name: musicbrainz-picard
+
+services:
+  picard:
+    container_name: MusicBrainzPicard
+    image: jlesage/musicbrainz-picard:latest
+    ports:
+      - "5800:5800"
+    environment:
+      PUID: '1000'
+      PGID: '1000'
+      TZ: '${TZ:-UTC}'
+      AUTO_UPDATE: '${AUTO_UPDATE:-true}'
+    volumes:
+      - /DATA/AppData/musicbrainz-picard/config:/config
+      - /DATA/AppData/musicbrainz-picard/storage:/storage
+    labels:
+      - "casaos.port=5800"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5800"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    x-casaos:
+      envs:
+        - container: TZ
+          description:
+            en_us: 'Time zone (e.g., America/New_York, Europe/London)'
+          default: UTC
+        - container: AUTO_UPDATE
+          description:
+            en_us: 'Automatically check for application updates on startup'
+          default: 'true'
+      volumes:
+        - container: /config
+          description:
+            en_us: Picard configuration, state, and logs
+        - container: /storage
+          description:
+            en_us: Music files to be tagged (mount your audio library here)
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: picard
+  description:
+    en_us: 'MusicBrainz Picard is a cross-platform music tagger that automatically identifies and tags your music files using the MusicBrainz database. Access the full graphical interface from any web browser via noVNC.'
+  tagline:
+    en_us: Cross-platform music tagger with web GUI
+  developer: jlesage
+  author: a730
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/musicbrainz-picard/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/musicbrainz-picard/thumbnail.png
+  title:
+    en_us: MusicBrainz Picard
+  category: Creative Tools
+  port_map: "5800"
+  scheme: http
+  index: /
+  tips:
+    before_install:
+      en_us: |
+        MusicBrainz Picard automatically identifies and tags your music files.
+        Open http://localhost:5800 to access the web GUI.
+        Place your music files in the /storage mount to tag them.
+        Requires a network connection to query the MusicBrainz database.

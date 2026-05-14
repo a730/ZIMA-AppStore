@@ -1,0 +1,67 @@
+name: handbrake
+
+services:
+  handbrake:
+    container_name: HandBrake
+    image: lscr.io/linuxserver/handbrake:latest
+    ports:
+      - "3007:3000"
+    environment:
+      PUID: '1000'
+      PGID: '1000'
+      TZ: '${TZ:-UTC}'
+    volumes:
+      - /DATA/AppData/handbrake/config:/config
+      - /DATA/AppData/handbrake/storage:/storage
+    labels:
+      - "casaos.port=3007"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    shm_size: 1gb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    x-casaos:
+      envs:
+        - container: TZ
+          description:
+            en_us: 'Time zone (e.g., America/New_York, Europe/London)'
+          default: UTC
+      volumes:
+        - container: /config
+          description:
+            en_us: HandBrake configuration and state
+        - container: /storage
+          description:
+            en_us: Media files for input/output (mount your video folders here)
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: handbrake
+  description:
+    en_us: 'HandBrake is an open-source video transcoder for converting video from nearly any format to a selection of modern, widely supported codecs. Web interface with full GUI accessible from your browser.'
+  tagline:
+    en_us: Open-source video transcoder with web GUI
+  developer: LinuxServer.io
+  author: a730
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/handbrake/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/handbrake/thumbnail.png
+  title:
+    en_us: HandBrake
+  category: Creative Tools
+  port_map: "3007"
+  scheme: http
+  index: /
+  tips:
+    before_install:
+      en_us: |
+        HandBrake is a video transcoder with a full web GUI.
+        Open http://localhost:3007 to access the interface.
+        Place input videos in /storage and output will be available there too.
+        The container requires at least 1GB of shared memory (shm_size).
