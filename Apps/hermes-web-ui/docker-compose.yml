@@ -2,7 +2,7 @@ name: hermes-web-ui
 services:
   hermes-webui:
     container_name: HermesWebUI
-    image: ghcr.io/a730/hermes-web-ui:latest
+    image: ghcr.io/a730/hermes-web-ui:v1.0.0
     ports:
       - "6060:6060"
     environment:

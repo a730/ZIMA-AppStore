@@ -72,7 +72,7 @@ services:
   # ─── Gateway Bridge — exposes SwarmClaw agents as an OpenClaw gateway ───
   gateway-bridge:
     container_name: SwarmControlBridge
-    image: ghcr.io/a730/swarm-control-bridge:latest
+    image: ghcr.io/a730/swarm-control-bridge:v1.0.0
     ports:
       - "18789:18789"
     environment:
