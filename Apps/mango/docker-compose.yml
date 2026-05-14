@@ -74,7 +74,6 @@ services:
 x-casaos:
   architectures:
     - amd64
-    - arm64
   main: mango
   description:
     en_us: Mango is a self-hosted manga server and web reader with built-in anime streaming and manga search. Supports local CBZ/ZIP/CBR libraries, OPDS, multi-user, and online content browsing from ComicK, MangaDex, AnimeKai and more.
