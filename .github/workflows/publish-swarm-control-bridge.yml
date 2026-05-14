@@ -49,4 +49,4 @@ jobs:
             ghcr.io/a730/swarm-control-bridge:latest
             ghcr.io/a730/swarm-control-bridge:${{ github.sha }}
             ${{ github.ref_type == 'tag' && format('ghcr.io/a730/swarm-control-bridge:{0}', github.ref_name) || '' }}
-            ${{ github.event_name == 'schedule' && format('ghcr.io/a730/swarm-control-bridge:{0}', steps.date.outputs.version) || '' }}
+            ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && format('ghcr.io/a730/swarm-control-bridge:{0}', steps.date.outputs.version) || '' }}

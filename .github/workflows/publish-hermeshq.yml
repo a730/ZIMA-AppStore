@@ -43,7 +43,7 @@ jobs:
           tags: |
             ghcr.io/a730/hermeshq-backend:latest
             ${{ github.ref_type == 'tag' && format('ghcr.io/a730/hermeshq-backend:{0}', github.ref_name) || '' }}
-            ${{ github.event_name == 'schedule' && format('ghcr.io/a730/hermeshq-backend:{0}', steps.date.outputs.version) || '' }}
+            ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && format('ghcr.io/a730/hermeshq-backend:{0}', steps.date.outputs.version) || '' }}
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
@@ -55,4 +55,4 @@ jobs:
           tags: |
             ghcr.io/a730/hermeshq-frontend:latest
             ${{ github.ref_type == 'tag' && format('ghcr.io/a730/hermeshq-frontend:{0}', github.ref_name) || '' }}
-            ${{ github.event_name == 'schedule' && format('ghcr.io/a730/hermeshq-frontend:{0}', steps.date.outputs.version) || '' }}
+            ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && format('ghcr.io/a730/hermeshq-frontend:{0}', steps.date.outputs.version) || '' }}

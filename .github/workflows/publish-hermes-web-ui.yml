@@ -51,4 +51,4 @@ jobs:
             ghcr.io/a730/hermes-web-ui:latest
             ghcr.io/a730/hermes-web-ui:${{ github.sha }}
             ${{ github.ref_type == 'tag' && format('ghcr.io/a730/hermes-web-ui:{0}', github.ref_name) || '' }}
-            ${{ github.event_name == 'schedule' && format('ghcr.io/a730/hermes-web-ui:{0}', steps.date.outputs.version) || '' }}
+            ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && format('ghcr.io/a730/hermes-web-ui:{0}', steps.date.outputs.version) || '' }}

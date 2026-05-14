@@ -41,4 +41,4 @@ jobs:
           tags: |
             ghcr.io/a730/vllm-cpu:latest
             ${{ github.ref_type == 'tag' && format('ghcr.io/a730/vllm-cpu:{0}', github.ref_name) || '' }}
-            ${{ github.event_name == 'schedule' && format('ghcr.io/a730/vllm-cpu:{0}', steps.date.outputs.version) || '' }}
+            ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && format('ghcr.io/a730/vllm-cpu:{0}', steps.date.outputs.version) || '' }}
