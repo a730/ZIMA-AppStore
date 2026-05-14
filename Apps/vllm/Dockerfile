@@ -12,12 +12,11 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install --upgrade pip
 
-RUN git clone https://github.com/vllm-project/vllm.git /src \
-    && cd /src \
-    && git checkout v0.8.4
+RUN git clone https://github.com/vllm-project/vllm-openvino.git /src \
+    && cd /src
 
 RUN cd /src \
-    && VLLM_TARGET_DEVICE=openvino \
+    && VLLM_TARGET_DEVICE="empty" \
        PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu \
        pip install -v . --no-cache-dir
 
