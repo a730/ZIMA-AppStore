@@ -8,21 +8,12 @@ RUN git clone --depth=1 https://github.com/thesysdev/openclaw-os.git .
 RUN corepack enable && corepack prepare pnpm@9 --activate && \
     pnpm install --frozen-lockfile && pnpm -r build
 
-# Stage 2: Build OpenClaw gateway with plugin injected
+# Stage 2: Build OpenClaw gateway (without plugin — avoids workspace build conflicts)
 FROM ${NODE_BOOKWORM_IMAGE} AS gateway-builder
 WORKDIR /app
 RUN git clone --depth=1 https://github.com/openclaw/openclaw.git .
-
-COPY --from=plugin-builder /app/packages/claw-plugin /app/extensions/openclaw-os
-
-RUN corepack enable && corepack prepare pnpm@9 --activate
-
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-    NODE_OPTIONS=--max-old-space-size=2048 pnpm install --no-frozen-lockfile \
-      --config.supportedArchitectures.os=linux \
-      --config.supportedArchitectures.cpu="$(node -p 'process.arch')" \
-      --config.supportedArchitectures.libc=glibc \
-      --config.minimumReleaseAge=0
+RUN corepack enable && corepack prepare pnpm@9 --activate && \
+    pnpm install --frozen-lockfile
 
 RUN NODE_OPTIONS=--max-old-space-size=8192 pnpm build:docker
 
@@ -32,12 +23,7 @@ RUN pnpm ui:build
 # Stage 3: Prune dev dependencies for runtime
 FROM gateway-builder AS runtime-assets
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-    CI=true pnpm prune --prod \
-      --config.offline=true \
-      --config.supportedArchitectures.os=linux \
-      --config.supportedArchitectures.cpu="$(node -p 'process.arch')" \
-      --config.supportedArchitectures.libc=glibc \
-      --config.minimumReleaseAge=0
+    CI=true pnpm prune --prod --config.offline=true
 
 # Stage 4: Runtime image
 FROM ${NODE_BOOKWORM_SLIM_IMAGE}
@@ -60,6 +46,14 @@ COPY --from=runtime-assets --chown=node:node /app/pnpm-workspace.yaml .
 COPY --from=runtime-assets --chown=node:node /app/openclaw.mjs .
 COPY --from=runtime-assets --chown=node:node /app/extensions ./extensions
 COPY --from=runtime-assets --chown=node:node /app/skills ./skills
+
+# Copy built plugin into runtime extensions directory
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/dist /app/extensions/openclaw-os/dist
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/static /app/extensions/openclaw-os/static
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/skills /app/extensions/openclaw-os/skills
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/prompts /app/extensions/openclaw-os/prompts
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/openclaw.plugin.json /app/extensions/openclaw-os/openclaw.plugin.json
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/package.json /app/extensions/openclaw-os/package.json
 
 ENV COREPACK_HOME=/usr/local/share/corepack
 RUN install -d -m 0755 "$COREPACK_HOME" && corepack enable
