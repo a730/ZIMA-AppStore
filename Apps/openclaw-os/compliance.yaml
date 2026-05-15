@@ -1,0 +1,67 @@
+app:
+  name: OpenClaw OS
+  version: latest
+  description: All-in-one AI assistant with generative workspace
+
+data_stored:
+  - type: user_content
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: credentials
+    location: local_filesystem
+    encryption: at_rest
+    retention: until_uninstall
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+
+network_egress:
+  telemetry: false
+  update_checks: true
+  external_api_calls:
+    - url: https://api.openai.com
+      purpose: LLM API calls
+      auth: api_key
+    - url: https://api.anthropic.com
+      purpose: LLM API calls
+      auth: api_key
+    - url: https://generativelanguage.googleapis.com
+      purpose: LLM API calls
+      auth: api_key
+  urls:
+    - api.openai.com
+    - api.anthropic.com
+    - generativelanguage.googleapis.com
+    - api.openrouter.ai
+    - github.com
+    - npmjs.org
+
+authentication:
+  local_accounts: true
+  sso: false
+  mfa: false
+  session_type: token
+  api_key_supported: true
+  default_credentials:
+    username: null
+    change_required: false
+
+hardening:
+  container_user: node
+  read_only_fs: false
+  network_policy: bridge
+  exposed_ports:
+    - 18789
+
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: manual
+  audit_logging: true
+  encryption_options:
+    - tls

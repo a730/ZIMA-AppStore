@@ -60,6 +60,11 @@
     "description": "Agent Platforms"
   },
   {
+    "name": "OpenClawOS",
+    "font": "openclaw-os",
+    "description": "Agent Platforms"
+  },
+  {
     "name": "MusicBrainz Picard",
     "font": "musicbrainz-picard",
     "description": "Creative Tools"
