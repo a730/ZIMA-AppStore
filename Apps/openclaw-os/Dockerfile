@@ -23,7 +23,10 @@ RUN pnpm ui:build
 # Stage 3: Prune dev dependencies for runtime
 FROM gateway-builder AS runtime-assets
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-    CI=true pnpm prune --prod --config.offline=true
+    CI=true pnpm prune --prod \
+      --config.supportedArchitectures.os=linux \
+      --config.supportedArchitectures.cpu="$(node -p 'process.arch')" \
+      --config.supportedArchitectures.libc=glibc
 
 # Stage 4: Runtime image
 FROM ${NODE_BOOKWORM_SLIM_IMAGE}
