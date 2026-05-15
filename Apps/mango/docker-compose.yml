@@ -3,7 +3,7 @@ name: mango
 services:
   mango:
     container_name: mango
-    image: ghcr.io/a730/mango:latest
+    build: .
     ports:
       - "9000:9000"
     labels:
@@ -11,15 +11,13 @@ services:
       - "casaos.protocol=http"
       - "casaos.entrypoint=/"
     healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:9000/"]
+      test: ["CMD", "wget", "--spider", "http://127.0.0.1:9000/"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
     environment:
       PORT: '9000'
-    depends_on:
-      - anime-middleware
     security_opt:
       - no-new-privileges:true
     cap_drop:
