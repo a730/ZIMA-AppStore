@@ -21,7 +21,8 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
     NODE_OPTIONS=--max-old-space-size=2048 pnpm install --no-frozen-lockfile \
       --config.supportedArchitectures.os=linux \
       --config.supportedArchitectures.cpu="$(node -p 'process.arch')" \
-      --config.supportedArchitectures.libc=glibc
+      --config.supportedArchitectures.libc=glibc \
+      --config.minimumReleaseAge=0
 
 RUN NODE_OPTIONS=--max-old-space-size=8192 pnpm build:docker
 
@@ -35,7 +36,8 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
       --config.offline=true \
       --config.supportedArchitectures.os=linux \
       --config.supportedArchitectures.cpu="$(node -p 'process.arch')" \
-      --config.supportedArchitectures.libc=glibc
+      --config.supportedArchitectures.libc=glibc \
+      --config.minimumReleaseAge=0
 
 # Stage 4: Runtime image
 FROM ${NODE_BOOKWORM_SLIM_IMAGE}
