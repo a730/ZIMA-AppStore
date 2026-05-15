@@ -6,7 +6,7 @@ FROM ${NODE_BOOKWORM_IMAGE} AS plugin-builder
 WORKDIR /app
 RUN git clone --depth=1 https://github.com/thesysdev/openclaw-os.git .
 RUN corepack enable && corepack prepare pnpm@9 --activate && \
-    pnpm install --frozen-lockfile && pnpm -r build
+    pnpm install --frozen-lockfile && cd packages/claw-plugin && pnpm bundle-ui && pnpm build
 
 # Stage 2: Build OpenClaw gateway (without plugin — avoids workspace build conflicts)
 FROM ${NODE_BOOKWORM_IMAGE} AS gateway-builder
