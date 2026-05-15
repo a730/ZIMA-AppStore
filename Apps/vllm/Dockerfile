@@ -18,7 +18,8 @@ RUN git clone https://github.com/vllm-project/vllm-openvino.git /src \
 RUN cd /src \
     && VLLM_TARGET_DEVICE="empty" \
        PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu \
-       pip install -v . --no-cache-dir
+       pip install -v . --no-cache-dir \
+    && pip install --upgrade safetensors
 
 RUN python3 -m pip uninstall -y triton 2>/dev/null; exit 0
 
