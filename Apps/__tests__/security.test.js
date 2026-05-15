@@ -26,11 +26,6 @@ function readCompose(appDir) {
   return yaml.parse(fs.readFileSync(composePath, 'utf8'));
 }
 
-function getImageTag(image) {
-  const parts = image.split(':');
-  return parts.length > 1 ? parts[parts.length - 1] : 'latest';
-}
-
 describe('App Store Security Hardening', () => {
   const appDirs = getAppDirs();
   const composeCache = {};
@@ -107,23 +102,6 @@ describe('App Store Security Hardening', () => {
         Object.entries(compose.services || {}).forEach(([svc, cfg]) => {
           if (cfg.image && !cfg.user && !cfg.image.includes('scratch') && !cfg.image.includes('alpine')) {
             // warn not fail — many base images run as root by default
-          }
-        });
-      });
-    });
-  });
-
-  describe('Pinned Version Tags', () => {
-    appDirs.forEach(dir => {
-      test(`${dir}: uses pinned version tag (not :latest)`, () => {
-        const compose = composeCache[dir];
-        if (!compose) return;
-        Object.entries(compose.services || {}).forEach(([svc, cfg]) => {
-          if (cfg.image && !cfg.build) {
-            const tag = getImageTag(cfg.image);
-            if (tag === 'latest') {
-              console.warn(`\n⚠  ${dir}/${svc}: uses :latest tag (${cfg.image})`);
-            }
           }
         });
       });

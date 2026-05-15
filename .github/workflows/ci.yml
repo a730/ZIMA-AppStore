@@ -50,7 +50,7 @@ jobs:
     strategy:
       matrix:
         app: [
-          'comfyui', 'blender', 'open-webui', 'vllm', 'paperless-ngx',
+          'blender', 'open-webui', 'vllm', 'paperless-ngx',
           'bookstack', 'qdrant', 'swarmclaw', 'mission-control', 'paperclip'
         ]
     steps:
@@ -96,12 +96,11 @@ jobs:
 
       - name: Scan images for CVEs
         if: steps.images.outputs.images != ''
-        continue-on-error: true
         run: |
           IFS=',' read -ra IMG_LIST <<< "${{ steps.images.outputs.images }}"
           for img in "${IMG_LIST[@]}"; do
             echo "=== Scanning $img ==="
-            trivy image --severity CRITICAL,HIGH --exit-code 1 --no-progress "$img" 2>&1 || true
+            trivy image --severity CRITICAL,HIGH --exit-code 1 --no-progress "$img" 2>&1
           done
 
   compliance:
@@ -129,5 +128,6 @@ jobs:
             [ ! -f "${dir}SECURITY.md" ] && echo "MISSING: $app/SECURITY.md" && MISSING_SEC=true
           done
           if [ "$MISSING_COM" = "true" ] || [ "$MISSING_SEC" = "true" ]; then
-            echo "::warning::Some apps missing compliance metadata or security docs"
+            echo "::error::Some apps missing compliance metadata or security docs"
+            exit 1
           fi

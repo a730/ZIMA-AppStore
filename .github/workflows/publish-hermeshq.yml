@@ -30,6 +30,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
       - name: Generate date version
         id: date
         run: echo "version=v$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
@@ -39,6 +42,7 @@ jobs:
         with:
           context: https://github.com/jpalmae/hermeshq.git#main
           file: backend/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ghcr.io/a730/hermeshq-backend:latest
@@ -50,6 +54,7 @@ jobs:
         with:
           context: https://github.com/jpalmae/hermeshq.git#main
           file: frontend/Dockerfile
+          platforms: linux/amd64,linux/arm64
           build-args: VITE_API_BASE_URL=
           push: true
           tags: |
