@@ -17,6 +17,17 @@ services:
     # Container restart policy - restarts the container unless manually stopped
     restart: unless-stopped
 
+    # Security hardening - drop all capabilities and add back only what's needed
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - NET_BIND_SERVICE
+      - FOWNER
+
     # Environment variables for the container
     environment:
       - PHP_MEMORY_LIMIT="512M"
@@ -369,6 +380,12 @@ services:
   zimaos-coolify-soketi:
     container_name: zimaos-coolify-soketi
     image: quay.io/soketi/soketi:1.6-16-alpine
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
     ports:
       - "6001:6001"
       - "6002:6002"

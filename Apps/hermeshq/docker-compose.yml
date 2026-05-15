@@ -15,6 +15,8 @@ services:
     volumes:
       - /DATA/AppData/HermesHQ/postgres:/var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - hermeshq-net
     x-casaos:
       volumes:
         - container: /var/lib/postgresql/data
@@ -44,6 +46,17 @@ services:
     ports:
       - "8006:8000"
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - NET_BIND_SERVICE
+      - FOWNER
+    networks:
+      - hermeshq-net
     deploy:
       resources:
         limits:
@@ -81,6 +94,14 @@ services:
       retries: 3
       start_period: 40s
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    networks:
+      - hermeshq-net
     labels:
       - "casaos.port=3420"
       - "casaos.protocol=http"
@@ -90,6 +111,11 @@ services:
         - container: VITE_API_BASE_URL
           description:
             en_us: API base URL for frontend (leave empty for auto-detect)
+
+networks:
+  hermeshq-net:
+    driver: bridge
+
 x-casaos:
   architectures:
     - amd64

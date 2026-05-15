@@ -25,6 +25,17 @@ services:
       retries: 5
       start_period: 30s
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - NET_BIND_SERVICE
+      - FOWNER
+    networks:
+      - blinko-net
     x-casaos:
       envs:
         - container: NEXTAUTH_SECRET
@@ -48,11 +59,18 @@ services:
       retries: 5
     volumes:
       - /DATA/AppData/blinko/postgres:/var/lib/postgresql/data
+    networks:
+      - blinko-net
     x-casaos:
       volumes:
         - container: /var/lib/postgresql/data
           description:
             en_us: PostgreSQL data directory
+
+networks:
+  blinko-net:
+    driver: bridge
+
 x-casaos:
   architectures:
     - amd64

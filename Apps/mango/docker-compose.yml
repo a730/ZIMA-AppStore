@@ -33,10 +33,14 @@ services:
         limits:
           memory: 256M
           cpus: "1.0"
+    depends_on:
+      - anime-middleware
     volumes:
-      - /DATA/AppData/Mango/library:/home/mango/mango
+      - /DATA/AppData/Mango/data:/home/mango/mango
       - /DATA/AppData/Mango/config:/home/mango/.config/mango
     restart: unless-stopped
+    networks:
+      - mango-net
     x-casaos:
       envs:
         - container: PORT
@@ -45,7 +49,7 @@ services:
       volumes:
         - container: /home/mango/mango
           description:
-            en_us: Manga library directory
+            en_us: Manga library, database, uploads, plugins, and cache directory
         - container: /home/mango/.config/mango
           description:
             en_us: Mango configuration directory
@@ -67,8 +71,14 @@ services:
           memory: 256M
           cpus: "0.5"
     restart: unless-stopped
+    networks:
+      - mango-net
     x-casaos:
       volumes: []
+
+networks:
+  mango-net:
+    driver: bridge
 
 x-casaos:
   architectures:
@@ -88,3 +98,11 @@ x-casaos:
   port_map: "9000"
   scheme: http
   index: /
+  tips:
+    before_install:
+      en_us: |
+        Mango is a self-hosted manga server and web reader with anime streaming.
+        Open http://localhost:9000 to access the web interface.
+        Place your CBZ/ZIP/CBR files in /DATA/AppData/Mango/data/library.
+        First-run credentials are logged to the container output (docker logs mango).
+        Anime streaming requires the anime-middleware (starts automatically).

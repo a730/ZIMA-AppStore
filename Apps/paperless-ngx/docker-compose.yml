@@ -37,6 +37,17 @@ services:
       retries: 3
       start_period: 60s
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - NET_BIND_SERVICE
+      - FOWNER
+    networks:
+      - paperless-net
     x-casaos:
       envs:
         - container: PAPERLESS_SECRET_KEY
@@ -79,6 +90,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    networks:
+      - paperless-net
     x-casaos:
       volumes:
         - container: /data
@@ -99,11 +112,18 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - paperless-net
     x-casaos:
       volumes:
         - container: /var/lib/postgresql/data
           description:
             en_us: PostgreSQL data directory
+
+networks:
+  paperless-net:
+    driver: bridge
+
 x-casaos:
   architectures:
     - amd64
