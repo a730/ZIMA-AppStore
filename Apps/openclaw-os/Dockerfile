@@ -50,13 +50,13 @@ COPY --from=runtime-assets --chown=node:node /app/openclaw.mjs .
 COPY --from=runtime-assets --chown=node:node /app/extensions ./extensions
 COPY --from=runtime-assets --chown=node:node /app/skills ./skills
 
-# Copy built plugin into runtime extensions directory
-COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/dist /app/extensions/openclaw-os/dist
-COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/static /app/extensions/openclaw-os/static
-COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/skills /app/extensions/openclaw-os/skills
-COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/prompts /app/extensions/openclaw-os/prompts
-COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/openclaw.plugin.json /app/extensions/openclaw-os/openclaw.plugin.json
-COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/package.json /app/extensions/openclaw-os/package.json
+# Copy built plugin into runtime extensions directory (gateway loads from dist/extensions)
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/dist /app/dist/extensions/openclaw-os/dist
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/static /app/dist/extensions/openclaw-os/static
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/skills /app/dist/extensions/openclaw-os/skills
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/prompts /app/dist/extensions/openclaw-os/prompts
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/openclaw.plugin.json /app/dist/extensions/openclaw-os/openclaw.plugin.json
+COPY --from=plugin-builder --chown=node:node /app/packages/claw-plugin/package.json /app/dist/extensions/openclaw-os/package.json
 
 ENV COREPACK_HOME=/usr/local/share/corepack
 RUN install -d -m 0755 "$COREPACK_HOME" && corepack enable
