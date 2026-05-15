@@ -2,7 +2,7 @@ name: bookstack
 services:
   bookstack:
     container_name: BookStack
-    image: lscr.io/linuxserver/bookstack:26.03.4
+    image: lscr.io/linuxserver/bookstack:latest
     ports:
       - "6875:80"
     environment:

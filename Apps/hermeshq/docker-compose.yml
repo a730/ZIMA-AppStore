@@ -21,7 +21,7 @@ services:
           description:
             en_us: PostgreSQL data directory
   backend:
-    image: ghcr.io/a730/hermeshq-backend:v1.0.0
+    image: ghcr.io/a730/hermeshq-backend:latest
     container_name: hermeshq-backend
     depends_on:
       postgres:
@@ -68,7 +68,7 @@ services:
           description:
             en_us: Agent workspaces and data
   hermeshq-frontend:
-    image: ghcr.io/a730/hermeshq-frontend:v1.0.0
+    image: ghcr.io/a730/hermeshq-frontend:latest
     container_name: hermeshq-frontend
     depends_on:
       - backend

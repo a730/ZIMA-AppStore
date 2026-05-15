@@ -2,7 +2,7 @@ name: mission-control
 services:
   mission-control:
     container_name: MissionControl
-    image: ghcr.io/builderz-labs/mission-control:v2.0.1
+    image: ghcr.io/builderz-labs/mission-control:latest
     ports:
       - "3000:3000"
     environment:

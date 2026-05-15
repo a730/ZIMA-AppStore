@@ -2,7 +2,7 @@ name: llm-scaler
 services:
   llm-scaler:
     container_name: llm-scaler
-    image: intel/llm-scaler-vllm:0.14.0-b8.2.1
+    image: intel/llm-scaler-vllm:latest
     ports:
       - "8001:8001"
     labels:

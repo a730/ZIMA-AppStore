@@ -2,7 +2,7 @@ name: cncjs
 services:
   cncjs:
     container_name: CNCjs
-    image: cncjs/cncjs:v1.11.1
+    image: cncjs/cncjs:latest
     ports:
       - "8005:8000"
     volumes:

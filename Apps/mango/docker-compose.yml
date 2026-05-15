@@ -4,6 +4,7 @@ services:
   mango:
     container_name: mango
     build: .
+    image: ghcr.io/a730/mango:latest
     ports:
       - "9000:9000"
     labels:
