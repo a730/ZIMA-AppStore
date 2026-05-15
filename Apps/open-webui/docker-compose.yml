@@ -15,9 +15,14 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    volumes:
+      - /DATA/AppData/open-webui/data:/app/backend/data
     restart: unless-stopped
     x-casaos:
-      volumes: []
+      volumes:
+        - container: /app/backend/data
+          description:
+            en_us: Open WebUI data (chat history, configs, uploads)
 x-casaos:
   architectures:
     - amd64

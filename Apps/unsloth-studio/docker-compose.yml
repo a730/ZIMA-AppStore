@@ -23,9 +23,14 @@ services:
                 - gpu
               driver: nvidia
               count: -1
+    volumes:
+      - /DATA/AppData/unsloth-studio/workspace:/workspace
     restart: unless-stopped
     x-casaos:
-      volumes: []
+      volumes:
+        - container: /workspace
+          description:
+            en_us: Unsloth Studio workspace (notebooks, models, outputs)
 x-casaos:
   architectures:
     - amd64
