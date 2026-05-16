@@ -19,8 +19,8 @@ RUN cd /src \
     && VLLM_TARGET_DEVICE="empty" \
        PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu \
        pip install -v . --no-cache-dir \
-    && pip install --upgrade safetensors transformers \
-    && pip install optimum-intel
+    && pip install optimum-intel \
+    && pip install --upgrade safetensors transformers
 
 RUN python3 -m pip uninstall -y triton 2>/dev/null; exit 0
 
