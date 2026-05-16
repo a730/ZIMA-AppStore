@@ -30,10 +30,11 @@ Every app is scanned for critical/high CVEs using Trivy on each CI run.
 
 | App | Description | Category | GPU |
 |---|---|---|---|
-| [ComfyUI](https://github.com/comfyanonymous/ComfyUI) | A powerful and modular stable diffusion GUI | Generative AI | NVidia |
 | [InvokeAI](https://github.com/search?q=invoke-ai&type=repositories) | Advanced Stable Diffusion Interface | Generative AI | NVidia |
 | [LLM Scaler](https://github.com/search?q=intel&type=repositories) | Intel Arc optimized LLM scaling | Generative AI | NVidia |
 | [Open WebUI](https://github.com/search?q=open-webui&type=repositories) | Interface for your local LLMs | Generative AI | NVidia |
+| [SGLang (AVX2 CPU)](https://github.com/search?q=sgl-project&type=repositories) | High-performance LLM serving (AVX2 CPU) | Generative AI | NVidia |
+| [SGLang (CUDA)](https://github.com/search?q=sglang-project&type=repositories) | High-performance LLM inference (CUDA 12 + HiCache) | Generative AI | NVidia |
 | [Unsloth Studio](https://github.com/search?q=unsloth&type=repositories) | Efficient LLM fine-tuning and deployment | Generative AI | NVidia |
 | [vLLM (AVX2 + OpenVINO)](https://github.com/search?q=vllm-project&type=repositories) | High-throughput LLM serving (AVX2 + OpenVINO) | Generative AI | NVidia |
 | [Qdrant](https://github.com/qdrant/qdrant) | High-performance vector database for AI | AI Serving | NVidia |
@@ -41,6 +42,7 @@ Every app is scanned for critical/high CVEs using Trivy on each CI run.
 | [HermesHQ](https://github.com/search?q=jpalmae&type=repositories) | Control plane for Hermes Agent instances | Agent Platforms | No |
 | [MCPHub](https://github.com/search?q=samanhappy&type=repositories) | Unified hub for MCP server management | Agent Platforms | No |
 | [Mission Control](https://github.com/search?q=Builderz%20Labs&type=repositories) | AI agent orchestration dashboard | Agent Platforms | No |
+| [OpenClaw OS](https://github.com/search?q=thesysdev&type=repositories) | All-in-one AI assistant with generative workspace | Agent Platforms | No |
 | [Paperclip](https://github.com/search?q=Paperclip%20AI&type=repositories) | AI agent company orchestration platform | Agent Platforms | No |
 | [SwarmClaw](https://github.com/search?q=SwarmClaw%20AI&type=repositories) | Self-hosted AI agent runtime and multi-agent framework | Agent Platforms | No |
 | [SwarmControl](https://github.com/search?q=SwarmClaw%20AI%20%2B%20Builderz%20Labs&type=repositories) | Autonomous AI agent swarm orchestration with local LLM | Agent Platforms | No |

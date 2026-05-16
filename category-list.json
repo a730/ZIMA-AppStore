@@ -1,92 +1,67 @@
 [
   {
-    "name": "ComfyUI",
-    "font": "comfyui",
-    "description": "ComfyUI"
+    "name": "Generative AI",
+    "font": "creation",
+    "description": "Generative AI Apps"
   },
   {
-    "name": "Blender",
-    "font": "blender",
-    "description": "Blender"
+    "name": "AI Serving",
+    "font": "server",
+    "description": "AI Serving and Inference Apps"
   },
   {
-    "name": "CNCjs",
-    "font": "cncjs",
-    "description": "CNCjs"
+    "name": "Agent Platforms",
+    "font": "robot",
+    "description": "AI Agent Platforms"
   },
   {
-    "name": "HermesHQ",
-    "font": "hermeshq",
-    "description": "Agent Platforms"
+    "name": "Productivity",
+    "font": "clipboard-list-outline",
+    "description": "Productivity Apps"
   },
   {
-    "name": "Blinko",
-    "font": "blinko",
-    "description": "Productivity"
+    "name": "SelfHost",
+    "font": "server-plus-outline",
+    "description": "Self-hosted Applications"
   },
   {
-    "name": "SwarmControl",
-    "font": "swarm-control",
-    "description": "Agent Platforms"
+    "name": "Communication",
+    "font": "email-outline",
+    "description": "Communication Apps"
   },
   {
-    "name": "HermesWebUI",
-    "font": "hermes-web-ui",
-    "description": "Agent Platforms"
-  },
-  {
-    "name": "SwarmClaw",
-    "font": "swarmclaw",
-    "description": "Agent Platforms"
-  },
-  {
-    "name": "MissionControl",
-    "font": "mission-control",
-    "description": "Agent Platforms"
-  },
-  {
-    "name": "Paperclip",
-    "font": "paperclip",
-    "description": "Agent Platforms"
-  },
-  {
-    "name": "HandBrake",
-    "font": "handbrake",
+    "name": "Creative Tools",
+    "font": "palette",
     "description": "Creative Tools"
   },
   {
-    "name": "MCPHub",
-    "font": "mcphub",
-    "description": "Agent Platforms"
+    "name": "LinuxServer.io",
+    "font": "linux",
+    "description": "Apps maintained by LinuxServer.io"
   },
   {
-    "name": "OpenClawOS",
-    "font": "openclaw-os",
-    "description": "Agent Platforms"
-  },
-  {
-    "name": "MusicBrainz Picard",
-    "font": "musicbrainz-picard",
-    "description": "Creative Tools"
-  },
-  {
-    "name": "BookStack",
-    "font": "bookstack",
-    "description": "Productivity"
-  },
-  {
-    "name": "Paperless-ngx",
-    "font": "paperless-ngx",
-    "description": "Productivity"
-  },
-  {
-    "name": "Qdrant",
-    "font": "qdrant",
-    "description": "AI Serving"
+    "name": "Makerspace",
+    "font": "wrench",
+    "description": "Makerspace and Hardware Tools"
   },
   {
     "name": "Entertainment",
-    "font": "mango",
-    "description": "Entertainment"
+    "font": "movie-open-outline",
+    "description": "Entertainment Apps"
+  },
+  {
+    "name": "Development",
+    "font": "code-tags",
+    "description": "Development Tools"
+  },
+  {
+    "name": "Utilities",
+    "font": "toolbox-outline",
+    "description": "Utility Apps"
+  },
+  {
+    "name": "Games",
+    "font": "google-controller",
+    "description": "Games"
   }
 ]
