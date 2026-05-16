@@ -21,6 +21,7 @@ services:
       VLLM_CPU_AVX2: "1"
       VLLM_CPU_OMP_THREADS_BIND: close
       VLLM_TARGET_DEVICE: openvino
+      VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS: "1"
     volumes:
       - /DATA/AppData/vllm/models:/root/.cache/huggingface
       - /DATA/AppData/vllm/config:/app/config
@@ -45,6 +46,10 @@ services:
         - container: VLLM_CPU_OMP_THREADS_BIND
           description:
             en_us: CPU thread binding strategy (close/spread)
+        - container: VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS
+          description:
+            en_us: U8 weight compression at load time (1=ON, 0=OFF)
+          default: "1"
       volumes:
         - container: /root/.cache/huggingface
           description:

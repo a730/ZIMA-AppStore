@@ -19,7 +19,8 @@ RUN cd /src \
     && VLLM_TARGET_DEVICE="empty" \
        PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu \
        pip install -v . --no-cache-dir \
-    && pip install --upgrade safetensors
+    && pip install --upgrade safetensors transformers \
+    && pip install optimum-intel
 
 RUN python3 -m pip uninstall -y triton 2>/dev/null; exit 0
 
@@ -37,7 +38,12 @@ ENV VLLM_OPENVINO_DEVICE=CPU
 ENV VLLM_CPU_KVCACHE_SPACE=40
 ENV VLLM_CPU_OMP_THREADS_BIND=close
 ENV COLUMNS=80
+ENV VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS=ON
+ENV VLLM_OPENVINO_KV_CACHE_PRECISION=u8
 
 EXPOSE 8000
 
-ENTRYPOINT ["python3", "-m", "vllm.entrypoints.openai.api_server"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
