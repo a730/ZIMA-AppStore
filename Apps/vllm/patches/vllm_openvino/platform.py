@@ -28,7 +28,7 @@ except ImportError as e:
 
 class OpenVinoPlatform(Platform):
     _enum = PlatformEnum.OOT
-    device_name: str = "openvino"
+    device_name: str = "cpu"
     device_type: str = "cpu"
     dispatch_key: str = "CPU"
 
@@ -163,6 +163,14 @@ class OpenVinoPlatform(Platform):
         assert cls.is_openvino_cpu() or \
             cls.is_openvino_gpu(), \
             "OpenVINO backend supports only CPU and GPU devices"
+
+        # Override Gemma4Config's forced TRITON_ATTN backend since
+        # OpenVINO only supports CPU_ATTN.
+        if vllm_config.attention_config.backend == AttentionBackendEnum.TRITON_ATTN:
+            logger.info(
+                "OpenVINO platform does not support TRITON_ATTN backend; "
+                "falling back to CPU_ATTN.")
+            vllm_config.attention_config.backend = AttentionBackendEnum.CPU_ATTN
 
     @classmethod
     def check_if_supports_dtype(cls, dtype: torch.dtype):
