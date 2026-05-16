@@ -12,9 +12,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install --upgrade pip
 
-# Clone upstream vllm-openvino plugin @ v0.8.4 (last release with V0 engine)
-RUN git clone --depth 1 --branch v0.8.4 \
-    https://github.com/vllm-project/vllm-openvino.git /src
+# Clone upstream vllm-openvino plugin
+RUN git clone https://github.com/vllm-project/vllm-openvino.git /src \
+    && cd /src && git checkout dbabf37
 
 # Apply patches to adapt plugin to vLLM v0.19 API
 COPY patches /patches
