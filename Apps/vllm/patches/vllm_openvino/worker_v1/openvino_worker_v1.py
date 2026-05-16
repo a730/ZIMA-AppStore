@@ -358,10 +358,13 @@ class OpenVINOWorkerV1(WorkerBase):
         self.model_runner.input_batch = InputBatch(
             max_num_reqs=self.vllm_config.scheduler_config.max_num_seqs,
             max_model_len=self.vllm_config.model_config.max_model_len,
-            max_num_blocks_per_req=cdiv(self.vllm_config.model_config.max_model_len, self.vllm_config.cache_config.block_size),
+            max_num_batched_tokens=self.vllm_config.scheduler_config.max_num_batched_tokens,
             device=self.device,
             pin_memory=is_pin_memory_available(),
             vocab_size=self.vllm_config.model_config.get_vocab_size(),
+            block_sizes=[self.vllm_config.cache_config.block_size],
+            kernel_block_sizes=[self.vllm_config.cache_config.block_size],
+            max_num_blocks_per_req=[cdiv(self.vllm_config.model_config.max_model_len, self.vllm_config.cache_config.block_size)],
         )
 
         available_memory = total_device_memory * memory_utilization - used_device_mem

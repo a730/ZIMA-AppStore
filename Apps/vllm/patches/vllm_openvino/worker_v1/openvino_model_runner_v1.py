@@ -42,10 +42,13 @@ class OpenVINOModelRunnerV1:
         self.input_batch = InputBatch(
             max_num_reqs=self.vllm_config.scheduler_config.max_num_seqs,
             max_model_len=vllm_config.model_config.max_model_len,
-            max_num_blocks_per_req=cdiv(vllm_config.model_config.max_model_len, vllm_config.cache_config.block_size),
+            max_num_batched_tokens=self.vllm_config.scheduler_config.max_num_batched_tokens,
             device=self.device,
             pin_memory=is_pin_memory_available(),
             vocab_size=vllm_config.model_config.get_vocab_size(),
+            block_sizes=[vllm_config.cache_config.block_size],
+            kernel_block_sizes=[vllm_config.cache_config.block_size],
+            max_num_blocks_per_req=[cdiv(vllm_config.model_config.max_model_len, vllm_config.cache_config.block_size)],
         )
 
     def load_model(self) -> None:
