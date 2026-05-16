@@ -18,6 +18,8 @@ services:
     volumes:
       - /DATA/AppData/onedev/data:/opt/onedev
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     x-casaos:
       volumes:
         - container: /opt/onedev

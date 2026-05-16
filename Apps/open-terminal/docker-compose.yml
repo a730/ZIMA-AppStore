@@ -18,6 +18,8 @@ services:
     volumes:
       - /DATA/AppData/open-terminal/config:/config
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     x-casaos:
       volumes:
         - container: /config

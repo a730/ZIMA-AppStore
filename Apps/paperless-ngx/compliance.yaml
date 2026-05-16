@@ -1,0 +1,50 @@
+app:
+  name: Paperless-ngx
+  version: latest
+  description: Paperless-ngx is a document management system that transforms your
+    physical documents into a searchable online archive. It performs OCR on
+    scanned documents, automatically tags and categorizes them, and provides a
+    powerful search interface.
+data_stored:
+  - type: credentials
+    location: environment_variables
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: user_content
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+network_egress:
+  telemetry: false
+  update_checks: true
+  external_api_calls: []
+  urls:
+    - github.com
+    - ghcr.io
+    - docker.io
+authentication:
+  local_accounts: false
+  sso: false
+  mfa: false
+  session_type: token
+  api_key_supported: true
+hardening:
+  container_user: app
+  read_only_fs: false
+  network_policy: bridge
+  exposed_ports:
+    - "8002"
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: manual
+  audit_logging: false
+  encryption_options:
+    - tls

@@ -18,6 +18,8 @@ services:
     volumes:
       - /DATA/AppData/open-webui/data:/app/backend/data
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     x-casaos:
       volumes:
         - container: /app/backend/data

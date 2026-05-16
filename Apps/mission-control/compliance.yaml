@@ -1,0 +1,65 @@
+app:
+  name: Mission Control
+  version: latest
+  description: Open-source dashboard for AI agent orchestration. Manage agent
+    fleets, dispatch tasks, track costs, and coordinate multi-agent workflows —
+    self-hosted, zero external dependencies, powered by SQLite. 32 panels
+    including tasks, agents, skills, logs, tokens, memory, security, cron,
+    alerts, webhooks, and pipelines.
+data_stored:
+  - type: credentials
+    location: environment_variables
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: user_content
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: api_credentials
+    location: environment_variables
+    encryption: at_rest
+    retention: until_uninstall
+    user_deletable: true
+network_egress:
+  telemetry: false
+  update_checks: true
+  external_api_calls:
+    - url: https://api.openai.com
+      purpose: LLM API calls
+      auth: api_key
+    - url: https://api.anthropic.com
+      purpose: LLM API calls
+      auth: api_key
+  urls:
+    - github.com
+    - ghcr.io
+    - docker.io
+authentication:
+  local_accounts: true
+  sso: false
+  mfa: false
+  session_type: token
+  api_key_supported: true
+  default_credentials:
+    username: admin
+    change_required: true
+hardening:
+  container_user: app
+  read_only_fs: false
+  network_policy: bridge
+  exposed_ports:
+    - "3000"
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: manual
+  audit_logging: false
+  encryption_options:
+    - tls

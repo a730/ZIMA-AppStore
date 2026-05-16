@@ -47,6 +47,7 @@ jobs:
 
   security-scan:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       matrix:
         app: [
@@ -100,7 +101,7 @@ jobs:
           IFS=',' read -ra IMG_LIST <<< "${{ steps.images.outputs.images }}"
           for img in "${IMG_LIST[@]}"; do
             echo "=== Scanning $img ==="
-            trivy image --severity CRITICAL,HIGH --exit-code 1 --no-progress "$img" 2>&1
+            trivy image --severity CRITICAL,HIGH --exit-code 1 --no-progress --timeout 15m "$img" 2>&1
           done
 
   compliance:

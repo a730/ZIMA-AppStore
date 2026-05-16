@@ -26,6 +26,8 @@ services:
     volumes:
       - /DATA/AppData/unsloth-studio/workspace:/workspace
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     x-casaos:
       volumes:
         - container: /workspace

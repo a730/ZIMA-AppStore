@@ -1,0 +1,41 @@
+app:
+  name: Open WebUI
+  version: latest
+  description: Open WebUI is an extensible, community-driven web interface for LLMs.
+data_stored:
+  - type: user_content
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+network_egress:
+  telemetry: false
+  update_checks: true
+  external_api_calls: []
+  urls:
+    - github.com
+    - ghcr.io
+    - docker.io
+authentication:
+  local_accounts: false
+  sso: false
+  mfa: false
+  session_type: token
+hardening:
+  container_user: app
+  read_only_fs: false
+  network_policy: bridge
+  exposed_ports:
+    - "3009"
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: manual
+  audit_logging: false
+  encryption_options:
+    - tls

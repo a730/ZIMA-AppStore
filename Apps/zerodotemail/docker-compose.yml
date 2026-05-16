@@ -16,6 +16,12 @@ services:
       - DAC_OVERRIDE
       - NET_BIND_SERVICE
       - FOWNER
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3008"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
     networks:
       - zerodotemail-net
     volumes:
@@ -63,24 +69,44 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${ZERODOTEMAIL_DB_PASSWORD:-postgres}
       POSTGRES_DB: zerodotemail
       PGDATA: /var/lib/postgresql/data/pgdata
     networks:
       - zerodotemail-net
     volumes:
       - /DATA/AppData/ZeroDotEmail/postgres-data:/var/lib/postgresql/data
+    x-casaos:
+      envs:
+        - container: ZERODOTEMAIL_DB_PASSWORD
+          description:
+            en_us: PostgreSQL password for ZeroDotEmail
+          default: postgres
+      volumes:
+        - container: /var/lib/postgresql/data
+          description:
+            en_us: PostgreSQL data directory
   valkey:
     container_name: zerodotemail-redis
     image: bitnami/valkey:8.0
     restart: unless-stopped
     environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
+      ALLOW_EMPTY_PASSWORD: "${ZERODOTEMAIL_ALLOW_EMPTY_PASSWORD:-yes}"
       VALKEY_DISABLE_COMMANDS: FLUSHDB,FLUSHALL
     volumes:
       - /DATA/AppData/ZeroDotEmail/valkey-data:/bitnami/valkey/data
     networks:
       - zerodotemail-net
+    x-casaos:
+      envs:
+        - container: ZERODOTEMAIL_ALLOW_EMPTY_PASSWORD
+          description:
+            en_us: Allow empty Valkey password (yes/no)
+          default: "yes"
+      volumes:
+        - container: /bitnami/valkey/data
+          description:
+            en_us: Valkey data directory
   upstash-proxy:
     container_name: zerodotemail-upstash-proxy
     image: hiett/serverless-redis-http:0.0.10

@@ -3,6 +3,8 @@ services:
   app:
     image: linuxserver/blender:latest
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     environment:
       PUID: $PUID
       PGID: $PGID

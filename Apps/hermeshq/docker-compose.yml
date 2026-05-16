@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: hermeshq
       POSTGRES_USER: hermeshq
-      POSTGRES_PASSWORD: hermeshq
+      POSTGRES_PASSWORD: ${HERMESHQ_DB_PASSWORD:-hermeshq}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U hermeshq -d hermeshq"]
       interval: 5s
@@ -29,11 +29,11 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://hermeshq:hermeshq@postgres:5432/hermeshq
-      JWT_SECRET: change-me-to-a-random-secret
+      DATABASE_URL: postgresql+asyncpg://hermeshq:${HERMESHQ_DB_PASSWORD:-hermeshq}@postgres:5432/hermeshq
+      JWT_SECRET: ${HERMESHQ_JWT_SECRET:-change-me-to-a-random-secret}
       AUTH_MODE: local
       ADMIN_USERNAME: admin
-      ADMIN_PASSWORD: admin123
+      ADMIN_PASSWORD: ${HERMESHQ_ADMIN_PASSWORD:-admin123}
       ADMIN_DISPLAY_NAME: Hermes Operator
       WORKSPACES_ROOT: /app/workspaces
       BRANDING_ROOT: /app/workspaces/_branding

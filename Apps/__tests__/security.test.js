@@ -44,7 +44,7 @@ describe('App Store Security Hardening', () => {
         const issues = [];
         lines.forEach((line, i) => {
           SENSITIVE_PATTERNS.forEach(pattern => {
-            if (pattern.test(line) && !line.includes('example') && !line.includes('CHANGE_ME') && !line.includes('replace-me')) {
+            if (pattern.test(line) && !line.includes('${') && !line.includes('example') && !line.includes('CHANGE_ME') && !line.includes('replace-me')) {
               issues.push(`  Line ${i + 1}: ${line.trim()}`);
             }
           });

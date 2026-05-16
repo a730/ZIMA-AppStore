@@ -42,10 +42,10 @@ services:
       - DB_PORT="5432"
       - DB_DATABASE="coolify"
       - DB_USERNAME="coolify"
-      - DB_PASSWORD="f1986213-9d72-4c36-bbd4-adca2f414fa1"
+      - DB_PASSWORD="${COOLIFY_DB_PASSWORD:-f1986213-9d72-4c36-bbd4-adca2f414fa1}"
       - QUEUE_CONNECTION="redis"
       - REDIS_HOST="zimaos-coolify-redis"
-      - REDIS_PASSWORD="9e3df6aa-ea48-4e59-a9c4-59798f1ba9b4"
+      - REDIS_PASSWORD="${COOLIFY_REDIS_PASSWORD:-9e3df6aa-ea48-4e59-a9c4-59798f1ba9b4}"
       - HORIZON_BALANCE="100"
       - HORIZON_MAX_PROCESSES="10"
       - HORIZON_BALANCE_MAX_SHIFT="10"
@@ -157,6 +157,11 @@ services:
         - container: DB_PASSWORD
           description:
             en_us: Database password
+          default: ""
+        - container: REDIS_PASSWORD
+          description:
+            en_us: Redis password
+          default: ""
         - container: QUEUE_CONNECTION
           description:
             en_us: Queue connection
@@ -313,7 +318,7 @@ services:
       - /DATA/AppData/$AppID/pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: "coolify"
-      POSTGRES_PASSWORD: "f1986213-9d72-4c36-bbd4-adca2f414fa1"
+      POSTGRES_PASSWORD: "${COOLIFY_DB_PASSWORD:-f1986213-9d72-4c36-bbd4-adca2f414fa1}"
       POSTGRES_DB: "coolify"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U coolify", "-d", "coolify"]
@@ -332,9 +337,14 @@ services:
         - container: POSTGRES_PASSWORD
           description:
             en_us: Database password
+          default: ""
         - container: POSTGRES_DB
           description:
             en_us: Database name
+        - container: COOLIFY_DB_PASSWORD
+          description:
+            en_us: Coolify database password (must match POSTGRES_PASSWORD)
+          default: ""
       volumes:
         - container: /var/lib/postgresql/data
           description:
@@ -352,10 +362,10 @@ services:
         "--loglevel",
         "warning",
         "--requirepass",
-        "9e3df6aa-ea48-4e59-a9c4-59798f1ba9b4",
+        "${COOLIFY_REDIS_PASSWORD:-9e3df6aa-ea48-4e59-a9c4-59798f1ba9b4}",
       ]
     environment:
-      REDIS_PASSWORD: "9e3df6aa-ea48-4e59-a9c4-59798f1ba9b4"
+      REDIS_PASSWORD: "${COOLIFY_REDIS_PASSWORD:-9e3df6aa-ea48-4e59-a9c4-59798f1ba9b4}"
     volumes:
       - /DATA/AppData/$AppID/redis:/data
     healthcheck:
@@ -372,6 +382,11 @@ services:
         - container: REDIS_PASSWORD
           description:
             en_us: Redis password
+          default: ""
+        - container: COOLIFY_REDIS_PASSWORD
+          description:
+            en_us: Coolify Redis password (must match REDIS_PASSWORD)
+          default: ""
       volumes:
         - container: /data
           description:

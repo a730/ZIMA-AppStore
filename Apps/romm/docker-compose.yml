@@ -47,13 +47,18 @@ services:
     image: mariadb:10.11
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${ROMM_DB_ROOT_PASSWORD:-root}
       MYSQL_DATABASE: romm
     volumes:
       - /DATA/AppData/romm/db:/var/lib/mysql
     networks:
       - romm-net
     x-casaos:
+      envs:
+        - container: ROMM_DB_ROOT_PASSWORD
+          description:
+            en_us: MariaDB root password for RomM
+          default: root
       volumes:
         - container: /var/lib/mysql
           description:

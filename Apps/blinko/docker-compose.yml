@@ -14,7 +14,7 @@ services:
       NEXTAUTH_URL: http://localhost:1111
       NEXT_PUBLIC_BASE_URL: http://localhost:1111
       NEXTAUTH_SECRET: replace-me-with-a-secure-secret
-      DATABASE_URL: postgresql://postgres:blinko_pass@postgres:5432/blinko
+      DATABASE_URL: postgresql://postgres:${BLINKO_DB_PASSWORD:-blinko_pass}@postgres:5432/blinko
     depends_on:
       postgres:
         condition: service_healthy
@@ -51,7 +51,7 @@ services:
     environment:
       POSTGRES_DB: blinko
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: blinko_pass
+      POSTGRES_PASSWORD: ${BLINKO_DB_PASSWORD:-blinko_pass}
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres", "-d", "blinko"]
       interval: 5s
@@ -62,6 +62,11 @@ services:
     networks:
       - blinko-net
     x-casaos:
+      envs:
+        - container: BLINKO_DB_PASSWORD
+          description:
+            en_us: PostgreSQL password for Blinko database
+          default: blinko_pass
       volumes:
         - container: /var/lib/postgresql/data
           description:

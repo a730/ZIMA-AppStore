@@ -25,6 +25,8 @@ services:
       retries: 3
       start_period: 30s
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     stdin_open: true
     tty: true
     x-casaos:

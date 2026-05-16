@@ -32,6 +32,8 @@ services:
         reservations:
           memory: 16G
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     x-casaos:
       envs:
         - container: VLLM_OPENVINO_DEVICE

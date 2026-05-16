@@ -28,6 +28,8 @@ services:
     volumes:
       - /DATA/AppData/invokeai:/root/.invokeai
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     # CasaOS specific configuration for volume and port descriptions
     x-casaos:
       volumes:
