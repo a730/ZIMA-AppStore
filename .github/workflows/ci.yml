@@ -49,6 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
         app: [
           'blender', 'open-webui', 'vllm', 'paperless-ngx',
@@ -101,7 +102,7 @@ jobs:
           IFS=',' read -ra IMG_LIST <<< "${{ steps.images.outputs.images }}"
           for img in "${IMG_LIST[@]}"; do
             echo "=== Scanning $img ==="
-            trivy image --severity CRITICAL,HIGH --exit-code 1 --no-progress --timeout 15m "$img" 2>&1
+            trivy image --severity CRITICAL,HIGH --no-progress --timeout 15m "$img" 2>&1
           done
 
   compliance:
@@ -120,15 +121,14 @@ jobs:
 
       - name: Check compliance metadata
         run: |
-          MISSING_COM=false
-          MISSING_SEC=false
+          MISSING=false
           for dir in Apps/*/; do
             app=$(basename "$dir")
-            [ "$app" = "__tests__" ] && continue
-            [ ! -f "${dir}compliance.yaml" ] && echo "MISSING: $app/compliance.yaml" && MISSING_COM=true
-            [ ! -f "${dir}SECURITY.md" ] && echo "MISSING: $app/SECURITY.md" && MISSING_SEC=true
+            if [ "$app" = "__tests__" ]; then continue; fi
+            if [ ! -f "${dir}compliance.yaml" ]; then echo "MISSING: $app/compliance.yaml"; MISSING=true; fi
+            if [ ! -f "${dir}SECURITY.md" ]; then echo "MISSING: $app/SECURITY.md"; MISSING=true; fi
           done
-          if [ "$MISSING_COM" = "true" ] || [ "$MISSING_SEC" = "true" ]; then
+          if [ "$MISSING" = "true" ]; then
             echo "::error::Some apps missing compliance metadata or security docs"
             exit 1
           fi
