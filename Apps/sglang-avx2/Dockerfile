@@ -53,7 +53,8 @@ RUN source $HOME/.local/bin/env && \
     cp pyproject_cpu.toml pyproject.toml && \
     uv pip install .
 
-RUN source /opt/.venv/bin/activate && \
+RUN source $HOME/.local/bin/env && \
+    source /opt/.venv/bin/activate && \
     uv pip install --upgrade transformers
 
 ENV SGLANG_USE_CPU_ENGINE=1
