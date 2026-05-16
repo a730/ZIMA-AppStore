@@ -80,6 +80,10 @@ class OpenVinoPlatform(Platform):
         pass
 
     @classmethod
+    def manual_seed_all(cls, seed: int) -> None:
+        pass
+
+    @classmethod
     def check_and_update_config(cls, vllm_config: VllmConfig) -> None:
         from vllm.utils.mem_constants import GiB_bytes
 
