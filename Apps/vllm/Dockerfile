@@ -20,7 +20,8 @@ RUN cd /src \
        PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu \
        pip install -v . --no-cache-dir \
     && pip install --upgrade safetensors transformers \
-    && pip install --no-deps "optimum-intel[nncf] @ git+https://github.com/huggingface/optimum-intel.git"
+    && pip install --no-deps "optimum-intel[nncf] @ git+https://github.com/huggingface/optimum-intel.git" \
+    && pip install --no-deps git+https://github.com/huggingface/optimum.git
 
 RUN python3 -m pip uninstall -y triton 2>/dev/null; exit 0
 
