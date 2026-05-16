@@ -21,7 +21,8 @@ RUN cd /src \
        pip install -v . --no-cache-dir \
     && pip install --upgrade safetensors transformers \
     && pip install --no-deps "optimum-intel[nncf] @ git+https://github.com/huggingface/optimum-intel.git" \
-    && pip install --no-deps git+https://github.com/huggingface/optimum.git
+    && pip install --no-deps git+https://github.com/huggingface/optimum.git \
+    && pip install --no-deps "optimum-onnx @ git+https://github.com/huggingface/optimum-onnx.git@transformers-v5"
 
 RUN python3 -m pip uninstall -y triton 2>/dev/null; exit 0
 
