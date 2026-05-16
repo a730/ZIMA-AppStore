@@ -159,15 +159,26 @@ class OpenVINOCausalLM(nn.Module):
                 "as-is, all possible options that may affect model conversion "
                 "are ignored.")
 
-        load_in_8bit = (envs.VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS
-                        if export else False)
-        pt_model = OVModelForCausalLM.from_pretrained(
-            model_config.model,
-            export=export,
-            compile=False,
-            load_in_8bit=load_in_8bit,
-            trust_remote_code=model_config.trust_remote_code,
-        )
+        pt_model = None
+        for export_try in (False, True):
+            if pt_model is not None:
+                break
+            load_in_8bit = (envs.VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS
+                            if export_try else False)
+            try:
+                pt_model = OVModelForCausalLM.from_pretrained(
+                    model_config.model,
+                    export=export_try,
+                    compile=False,
+                    load_in_8bit=load_in_8bit,
+                    trust_remote_code=model_config.trust_remote_code,
+                )
+            except Exception:
+                if export_try:
+                    raise
+                logger.info(
+                    "No existing OpenVINO IR found, will attempt export...")
+        assert pt_model is not None
 
         paged_attention_transformation(pt_model.model)
         apply_gather_before_matmul_transformation(pt_model.model)
