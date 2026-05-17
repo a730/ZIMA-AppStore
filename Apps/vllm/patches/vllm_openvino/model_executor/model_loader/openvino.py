@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # ruff: noqa: SIM117
+from copy import deepcopy
 from pathlib import Path
 from typing import Optional
 
@@ -159,26 +160,51 @@ class OpenVINOCausalLM(nn.Module):
                 "as-is, all possible options that may affect model conversion "
                 "are ignored.")
 
-        pt_model = None
-        for export_try in (False, True):
-            if pt_model is not None:
-                break
-            load_in_8bit = (envs.VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS
-                            if export_try else False)
-            try:
-                pt_model = OVModelForCausalLM.from_pretrained(
-                    model_config.model,
-                    export=export_try,
-                    compile=False,
-                    load_in_8bit=load_in_8bit,
-                    trust_remote_code=model_config.trust_remote_code,
-                )
-            except Exception:
-                if export_try:
-                    raise
-                logger.info(
-                    "No existing OpenVINO IR found, will attempt export...")
-        assert pt_model is not None
+        hf_config = getattr(model_config, 'hf_config', None)
+        is_gemma4 = (
+            hf_config is not None
+            and hasattr(hf_config, 'model_type')
+            and hf_config.model_type == "gemma4"
+        )
+
+        if is_gemma4:
+            # Gemma4 has model_type "gemma4" (multimodal) but optimum's
+            # OVModelForCausalLM only supports text-generation-with-past,
+            # not image-text-to-text. Override to "gemma4_text" so optimum
+            # uses the text-only export path, producing a single ov.Model
+            # (embedding + LM) compatible with our transformations.
+            gemma4_config = deepcopy(hf_config)
+            gemma4_config.model_type = "gemma4_text"
+            load_in_8bit = envs.VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS
+            pt_model = OVModelForCausalLM.from_pretrained(
+                model_config.model,
+                export=True,
+                compile=False,
+                config=gemma4_config,
+                load_in_8bit=load_in_8bit,
+                trust_remote_code=model_config.trust_remote_code,
+            )
+        else:
+            pt_model = None
+            for export_try in (False, True):
+                if pt_model is not None:
+                    break
+                load_in_8bit = (envs.VLLM_OPENVINO_ENABLE_QUANTIZED_WEIGHTS
+                                if export_try else False)
+                try:
+                    pt_model = OVModelForCausalLM.from_pretrained(
+                        model_config.model,
+                        export=export_try,
+                        compile=False,
+                        load_in_8bit=load_in_8bit,
+                        trust_remote_code=model_config.trust_remote_code,
+                    )
+                except Exception:
+                    if export_try:
+                        raise
+                    logger.info(
+                        "No existing OpenVINO IR found, will attempt export...")
+            assert pt_model is not None
 
         paged_attention_transformation(pt_model.model)
         apply_gather_before_matmul_transformation(pt_model.model)
