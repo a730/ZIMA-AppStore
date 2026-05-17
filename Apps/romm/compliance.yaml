@@ -1,0 +1,45 @@
+app:
+  name: RomM
+  version: latest
+  description: RomM is a self-hosted ROM manager for game enthusiasts.
+data_stored:
+  - type: credentials
+    location: environment_variables
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: user_content
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+network_egress:
+  telemetry: false
+  update_checks: true
+  external_api_calls: []
+  urls:
+    - github.com
+    - docker.io
+authentication:
+  local_accounts: true
+  sso: false
+  mfa: false
+  session_type: token
+hardening:
+  container_user: app
+  read_only_fs: false
+  network_policy: bridge
+  exposed_ports:
+    - "8083"
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: manual
+  audit_logging: false
+  encryption_options:
+    - tls

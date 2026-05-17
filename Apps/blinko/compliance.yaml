@@ -1,0 +1,48 @@
+app:
+  name: Blinko
+  version: latest
+  description: Blinko is an open-source, self-hosted personal AI note tool
+    prioritizing privacy, designed for quickly capturing and organizing fleeting
+    thoughts.
+data_stored:
+  - type: credentials
+    location: environment_variables
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: user_content
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+network_egress:
+  telemetry: false
+  update_checks: true
+  external_api_calls: []
+  urls:
+    - github.com
+    - docker.io
+authentication:
+  local_accounts: true
+  sso: false
+  mfa: false
+  session_type: token
+  api_key_supported: true
+hardening:
+  container_user: app
+  read_only_fs: false
+  network_policy: bridge
+  exposed_ports:
+    - "1111"
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: manual
+  audit_logging: false
+  encryption_options:
+    - tls

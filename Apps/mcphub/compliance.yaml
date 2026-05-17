@@ -1,0 +1,48 @@
+app:
+  name: MCPHub
+  version: latest
+  description: MCPHub is a unified hub server that consolidates multiple MCP
+    (Model Context Protocol) servers into a single SSE endpoint. Centralized
+    dashboard for monitoring, adding, and managing MCP servers with smart
+    routing, hot-swappable config, and OAuth 2.0 support.
+data_stored:
+  - type: credentials
+    location: environment_variables
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: user_content
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+network_egress:
+  telemetry: false
+  update_checks: true
+  external_api_calls: []
+  urls:
+    - github.com
+    - docker.io
+authentication:
+  local_accounts: true
+  sso: false
+  mfa: false
+  session_type: token
+hardening:
+  container_user: app
+  read_only_fs: false
+  network_policy: bridge
+  exposed_ports:
+    - "3010"
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: manual
+  audit_logging: false
+  encryption_options:
+    - tls

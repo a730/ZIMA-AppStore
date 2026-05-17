@@ -1,0 +1,45 @@
+app:
+  name: Hermes Web UI
+  version: latest
+  description: A full-featured web dashboard for Hermes Agent. Manage AI chat
+    sessions, monitor usage and costs, configure multi-platform channels
+    (Telegram, Discord, Slack, WhatsApp, Matrix, Feishu, WeChat, WeCom),
+    schedule cron jobs, browse skills, and manage models — all from a clean,
+    responsive web interface.
+data_stored:
+  - type: user_content
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+network_egress:
+  telemetry: false
+  update_checks: true
+  external_api_calls: []
+  urls:
+    - github.com
+    - ghcr.io
+    - docker.io
+authentication:
+  local_accounts: true
+  sso: false
+  mfa: false
+  session_type: token
+hardening:
+  container_user: app
+  read_only_fs: false
+  network_policy: bridge
+  exposed_ports:
+    - "6060"
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: manual
+  audit_logging: false
+  encryption_options:
+    - tls

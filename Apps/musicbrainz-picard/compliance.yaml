@@ -1,0 +1,43 @@
+app:
+  name: MusicBrainz Picard
+  version: latest
+  description: MusicBrainz Picard is a cross-platform music tagger that
+    automatically identifies and tags your music files using the MusicBrainz
+    database. Access the full graphical interface from any web browser via
+    noVNC.
+data_stored:
+  - type: user_content
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+network_egress:
+  telemetry: false
+  update_checks: true
+  external_api_calls: []
+  urls:
+    - github.com
+    - docker.io
+authentication:
+  local_accounts: false
+  sso: false
+  mfa: false
+  session_type: token
+hardening:
+  container_user: app
+  read_only_fs: false
+  network_policy: bridge
+  exposed_ports:
+    - "5800"
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: manual
+  audit_logging: false
+  encryption_options:
+    - tls
