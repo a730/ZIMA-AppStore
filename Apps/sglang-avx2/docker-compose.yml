@@ -1,0 +1,103 @@
+name: sglang-avx2
+services:
+  sglang-avx2:
+    container_name: sglang-avx2
+    image: ghcr.io/a730/sglang-avx2:latest
+    ports:
+      - "8004:8000"
+    labels:
+      - "casaos.port=8004"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/v1/completions"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 3600s
+    environment:
+      MODEL_ID: Qwen/Qwen3.6-35B-A3B
+      NUM_TP: "4"
+      QUANTIZATION: ""
+      ENABLE_TORCH_COMPILE: "true"
+      TORCH_COMPILE_MAX_BS: "4"
+      MAX_TOTAL_TOKENS: "32768"
+    volumes:
+      - /DATA/AppData/sglang-avx2/models:/root/.cache/huggingface
+    deploy:
+      resources:
+        limits:
+          memory: 192G
+          cpus: "32"
+        reservations:
+          memory: 16G
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    x-casaos:
+      envs:
+        - container: MODEL_ID
+          description:
+            en_us: HuggingFace model ID to serve
+          default: Qwen/Qwen3.6-35B-A3B
+        - container: NUM_TP
+          description:
+            en_us: Tensor parallel ranks (4 = 8 cores each on 3970X)
+          default: "4"
+        - container: QUANTIZATION
+          description:
+            en_us: Quantization method (w8a8_int8, awq, gptq, or empty for BF16)
+          default: ""
+        - container: ENABLE_TORCH_COMPILE
+          description:
+            en_us: Enable torch.compile for faster decoding (true/false)
+          default: "true"
+        - container: TORCH_COMPILE_MAX_BS
+          description:
+            en_us: Max batch size for torch.compile
+          default: "4"
+        - container: MAX_TOTAL_TOKENS
+          description:
+            en_us: Maximum total tokens in KV cache
+          default: "32768"
+        - container: HF_TOKEN
+          description:
+            en_us: HuggingFace access token (for gated models like Gemma)
+          default: ""
+      volumes:
+        - container: /root/.cache/huggingface
+          description:
+            en_us: HuggingFace model cache directory
+x-casaos:
+  architectures:
+    - amd64
+  main: sglang-avx2
+  description:
+    en_us: SGLang is a high-performance serving framework for LLMs. This build is compiled from source with -march=znver2 (AVX2) optimization for AMD Zen2 CPUs.
+  tagline:
+    en_us: High-performance LLM serving (AVX2 CPU)
+  developer: sgl-project
+  author: ZIMA
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/sglang-avx2/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/sglang-avx2/thumbnail.png
+  title:
+    en_us: SGLang (AVX2 CPU)
+  category: Generative AI
+  port_map: "8004"
+  scheme: http
+  index: /
+  screenshots: []
+  tips:
+    before_install:
+      en_us: |
+        Compiled from source with -march=znver2 (AVX2) for AMD Zen2 CPUs.
+        Optimized for Threadripper 3970X and similar Zen2/AVX2 CPUs.
+        Supports W8A8_INT8 and BF16 models.
+        First boot downloads the model (may take 10-30 min for large models).
+        Recommended: use W8A8_INT8 quantized models for best CPU performance.
+      after_install:
+        en_us: |
+          Model files are cached in /DATA/AppData/sglang-avx2/models.
+          Access the API at http://ZIMA_IP:8004/v1/completions (OpenAI-compatible).
+          Set QUANTIZATION=w8a8_int8 for W8A8 quantized models.
+          Set HF_TOKEN for gated models like Gemma or Llama.
