@@ -86,7 +86,6 @@ x-casaos:
   port_map: "8004"
   scheme: http
   index: /
-  screenshots: []
   tips:
     before_install:
       en_us: |
