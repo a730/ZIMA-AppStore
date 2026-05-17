@@ -1,0 +1,44 @@
+app:
+  name: SGLang (CUDA)
+  version: v0.5.11
+  description: SGLang is a high-performance serving framework for LLMs and VLMs,
+    optimized for NVIDIA GPUs. Supports GPT-OSS-20B, Zyphra/ZAYA1-8B, Qwen3.6,
+    Gemma4, and more.
+data_stored:
+  - type: user_content
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+  - type: configuration
+    location: local_filesystem
+    encryption: none
+    retention: until_uninstall
+    user_deletable: true
+network_egress:
+  telemetry: false
+  update_checks: true
+  external_api_calls: []
+  urls:
+    - huggingface.co
+    - github.com
+    - ghcr.io
+    - docker.io
+authentication:
+  local_accounts: false
+  sso: false
+  mfa: false
+  session_type: token
+hardening:
+  container_user: root
+  read_only_fs: false
+  network_policy: bridge
+  exposed_ports:
+    - "8001"
+compliance:
+  gdpr_compatible: true
+  data_sovereignty: local
+  backup_strategy: manual
+  audit_logging: false
+  encryption_options:
+    - tls
