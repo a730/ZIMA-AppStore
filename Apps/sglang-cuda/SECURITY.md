@@ -45,14 +45,17 @@ docker compose up -d
 3. Keep the app updated — rebuild from the latest SGLang base image
 4. Review logs regularly for unusual access patterns
 
-## Known CVEs
+## Vulnerability Disclosure
 
-Track known vulnerabilities at:
-- [GitHub Security Advisories](https://github.com/sgl-project/sglang/security)
-- [Docker Hub CVEs](https://hub.docker.com/r/lmsysorg/sglang)
+Report vulnerabilities through the central disclosure policy at [SECURITY.md](../SECURITY.md).
+
+## SBOM
+
+Software Bill of Materials for this app's images is available at [../../sboms/sglang-cuda/](../../sboms/sglang-cuda/).
+
 
 ## Supply Chain
 
 - Base image: `lmsysorg/sglang:v0.5.11-cu129-runtime`
-- SBOM: Generated on each CI build via Syft
+- SBOM: Auto-generated via Trivy (see ../../sboms/sglang-cuda/)
 - Image signing: Cosign signatures available in GHCR

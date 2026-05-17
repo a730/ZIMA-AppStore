@@ -58,14 +58,16 @@ docker compose up -d
 4. Keep the app updated to the latest version
 5. Review logs regularly for unauthorized access attempts
 
-## Known CVEs
+## Vulnerability Disclosure
 
-Track known vulnerabilities at:
-- [GitHub Security Advisories](https://github.com/{owner}/{repo}/security)
-- [Docker Hub CVEs](https://hub.docker.com/r/{image})
+Report vulnerabilities through the central disclosure policy at [SECURITY.md](../SECURITY.md).
+
+## SBOM
+
+Software Bill of Materials for this app's images is available at [../../sboms/swarm-control/](../../sboms/swarm-control/).
 
 ## Supply Chain
 
 - Base image: `ghcr.io/builderz-labs/mission-control:latest`
-- SBOM: Generated on each CI build via Syft
+- SBOM: Auto-generated via Trivy (see ../../sboms/swarm-control/)
 - Image signing: Cosign signatures available in GHCR

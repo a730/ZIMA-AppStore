@@ -44,10 +44,14 @@ tar -czf qdrant-backup-$(date +%Y%m%d).tar.gz /DATA/AppData/qdrant/storage
 3. Use a reverse proxy with TLS for external access
 4. Keep the image updated to the latest version
 
-## Known CVEs
+## Vulnerability Disclosure
 
-- [Qdrant GitHub Security](https://github.com/qdrant/qdrant/security)
-- [Docker Hub CVEs](https://hub.docker.com/r/qdrant/qdrant)
+Report vulnerabilities through the central disclosure policy at [SECURITY.md](../SECURITY.md).
+
+## SBOM
+
+Software Bill of Materials for this app's images is available at [../../sboms/qdrant/](../../sboms/qdrant/).
+
 
 ## Supply Chain
 

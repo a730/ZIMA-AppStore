@@ -121,6 +121,66 @@ jobs:
             trivy image --severity CRITICAL,HIGH --no-progress --timeout 15m "$img" 2>&1 || echo "::warning::Trivy scan failed for $img (image may be private or unavailable)"
           done
 
+      - name: Generate SBOMs
+        if: steps.images.outputs.images != ''
+        continue-on-error: true
+        run: |
+          IFS=',' read -ra IMG_LIST <<< "${{ steps.images.outputs.images }}"
+          for img in "${IMG_LIST[@]}"; do
+            SANITIZED=$(echo "$img" | sed 's/[^a-zA-Z0-9._-]/_/g')
+            echo "=== Generating SBOM for $img ==="
+            mkdir -p "sboms/${{ matrix.app }}"
+            trivy image --format spdx-json --output "sboms/${{ matrix.app }}/${SANITIZED}.spdx.json" "$img" 2>&1 || echo "::warning::SBOM generation failed for $img"
+          done
+
+      - name: Upload SBOMs
+        if: steps.images.outputs.images != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ matrix.app }}
+          path: sboms/
+
+  sbom-publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: security-scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download all SBOM artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: sbom-*
+          path: sboms-raw/
+
+      - name: Organize SBOMs into sboms/
+        run: |
+          mkdir -p sboms
+          for artifact_dir in sboms-raw/*/; do
+            if [ -d "$artifact_dir" ]; then
+              cp -r "$artifact_dir/"* sboms/
+            fi
+          done
+          rm -rf sboms-raw
+          echo "=== SBOMs collected ==="
+          find sboms -name "*.spdx.json" | sort
+
+      - name: Commit SBOMs
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add sboms/
+          if git diff --cached --quiet; then
+            echo "No SBOM changes to commit"
+          else
+            git commit -m "Update SBOMs for ${{ github.ref_name }}"
+            git push
+          fi
+
   compliance:
     runs-on: ubuntu-latest
     steps:
@@ -146,5 +206,23 @@ jobs:
           done
           if [ "$MISSING" = "true" ]; then
             echo "::error::Some apps missing compliance metadata or security docs"
+            exit 1
+          fi
+
+      - name: Check SECURITY.md has VDP cross-reference
+        run: |
+          MISSING=false
+          for dir in Apps/*/; do
+            app=$(basename "$dir")
+            secfile="${dir}SECURITY.md"
+            if [ -f "$secfile" ]; then
+              if ! grep -q "SECURITY.md" "$secfile"; then
+                echo "MISSING: $app/SECURITY.md missing VDP cross-reference"
+                MISSING=true
+              fi
+            fi
+          done
+          if [ "$MISSING" = "true" ]; then
+            echo "::error::Some SECURITY.md files missing VDP cross-reference to root SECURITY.md"
             exit 1
           fi

@@ -55,14 +55,17 @@ docker compose up -d
 6. Run `openclaw doctor` periodically to surface risky/misconfigured DM policies
 7. Store API keys in `openclaw.json` with restricted file permissions (600)
 
-## Known CVEs
+## Vulnerability Disclosure
 
-Track known vulnerabilities at:
-- [OpenClaw Security Advisories](https://github.com/openclaw/openclaw/security)
-- [OpenClaw-OS Security Advisories](https://github.com/thesysdev/openclaw-os/security)
+Report vulnerabilities through the central disclosure policy at [SECURITY.md](../SECURITY.md).
+
+## SBOM
+
+Software Bill of Materials for this app's images is available at [../../sboms/openclaw-os/](../../sboms/openclaw-os/).
+
 
 ## Supply Chain
 
 - Base image: `node:24-bookworm-slim`
-- SBOM: Generated on each CI build via Trivy
+- SBOM: Auto-generated via Trivy (see ../../sboms/openclaw-os/)
 - Image signing: Cosign signatures available in GHCR
