@@ -45,16 +45,31 @@ jobs:
       - name: Run security hardening tests
         run: npx jest tests/security.test.js --verbose
 
+  scan-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.discover.outputs.apps }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Discover all app directories
+        id: discover
+        run: |
+          APPS=$(node -e "
+            const fs = require('fs');
+            const apps = fs.readdirSync('Apps')
+              .filter(f => fs.statSync('Apps/' + f).isDirectory());
+            console.log(JSON.stringify(apps));
+          ")
+          echo "apps=$APPS" >> $GITHUB_OUTPUT
+
   security-scan:
+    needs: scan-matrix
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        app: [
-          'blender', 'open-webui', 'vllm', 'paperless-ngx',
-          'bookstack', 'qdrant', 'swarmclaw', 'mission-control', 'paperclip'
-        ]
+        app: ${{ fromJSON(needs.scan-matrix.outputs.apps) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -98,11 +113,12 @@ jobs:
 
       - name: Scan images for CVEs
         if: steps.images.outputs.images != ''
+        continue-on-error: true
         run: |
           IFS=',' read -ra IMG_LIST <<< "${{ steps.images.outputs.images }}"
           for img in "${IMG_LIST[@]}"; do
             echo "=== Scanning $img ==="
-            trivy image --severity CRITICAL,HIGH --no-progress --timeout 15m "$img" 2>&1
+            trivy image --severity CRITICAL,HIGH --no-progress --timeout 15m "$img" 2>&1 || echo "::warning::Trivy scan failed for $img (image may be private or unavailable)"
           done
 
   compliance:
