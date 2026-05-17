@@ -1,0 +1,103 @@
+name: sglang-cuda
+
+services:
+  sglang-cuda:
+    container_name: sglang-cuda
+    image: ghcr.io/a730/sglang-cuda:latest
+    shm_size: 32g
+    ipc: host
+    ports:
+      - "8001:8000"
+    labels:
+      - "casaos.port=8001"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 1800s
+    environment:
+      MODEL_ID: 'openai/gpt-oss-20b'
+      MAX_CONTEXT_LENGTH: '32768'
+      MEM_FRACTION_STATIC: '0.85'
+      ENABLE_HICACHE: 'true'
+      HICACHE_SIZE: '16'
+      HF_TOKEN: ''
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+                - gpu
+              driver: nvidia
+              count: -1
+    volumes:
+      - /DATA/AppData/sglang-cuda/models:/root/.cache/huggingface
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    x-casaos:
+      envs:
+        - container: MODEL_ID
+          description:
+            en_us: Model ID from HuggingFace Hub (e.g., openai/gpt-oss-20b, Zyphra/ZAYA1-8B, Qwen/Qwen3.6-35B-A3B)
+          default: 'openai/gpt-oss-20b'
+        - container: MAX_CONTEXT_LENGTH
+          description:
+            en_us: Maximum context length in tokens
+          default: '32768'
+        - container: MEM_FRACTION_STATIC
+          description:
+            en_us: Fraction of VRAM reserved for model weights + KV cache pool (0.0-1.0)
+          default: '0.85'
+        - container: ENABLE_HICACHE
+          description:
+            en_us: Enable hierarchical KV cache offloading to CPU RAM (true/false)
+          default: 'true'
+        - container: HICACHE_SIZE
+          description:
+            en_us: CPU RAM size in GB for HiCache KV cache overflow
+          default: '16'
+        - container: HF_TOKEN
+          description:
+            en_us: HuggingFace token for gated models (optional)
+          default: ''
+      volumes:
+        - container: /root/.cache/huggingface
+          description:
+            en_us: HuggingFace model cache directory (persists across restarts)
+
+x-casaos:
+  architectures:
+    - amd64
+  main: sglang-cuda
+  description:
+    en_us: SGLang is a high-performance serving framework for LLMs and VLMs, optimized for NVIDIA GPUs with CUDA 12. Supports GPT-OSS-20B, Zyphra/ZAYA1-8B, Qwen3.6, Gemma4, and more. Includes HiCache for CPU RAM KV cache offloading.
+  tagline:
+    en_us: High-performance LLM inference (CUDA 12 + HiCache)
+  developer: sglang-project
+  author: ZIMA
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/sglang-cuda/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/sglang-cuda/thumbnail.png
+  title:
+    en_us: SGLang (CUDA)
+  category: Generative AI
+  port_map: "8001"
+  scheme: http
+  index: /
+  tips:
+    before_install:
+      en_us: |
+        This app requires NVIDIA drivers and nvidia-container-toolkit to be installed on your ZimaCube.
+        The ZimaCube Pro Creator comes with both pre-installed.
+
+        First boot will download the model (12.8 GB) from HuggingFace — this may take 10-30 minutes.
+        Subsequent boots load from cache instantly.
+
+        To switch models, set MODEL_ID in app settings:
+        - openai/gpt-oss-20b (default, 16 GB VRAM)
+        - Zyphra/ZAYA1-8B (8.4B total, 0.7B active, fits any GPU)
+        - Qwen/Qwen3.6-35B-A3B (35B total, 3B active, needs 24 GB GPU)
+        - google/gemma-4-26b-it (26B total, 4B active, needs 24 GB GPU)
