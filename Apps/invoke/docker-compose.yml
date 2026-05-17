@@ -2,7 +2,7 @@ name: invokeai
 services:
   invokeai:
     container_name: InvokeAI
-    image: ghcr.io/invoke-ai/invokeai:latest
+    image: ghcr.io/invoke-ai/invokeai:v6.12.0-cuda
     ports:
       - "9090:9090"
     deploy:
@@ -28,8 +28,6 @@ services:
     volumes:
       - /DATA/AppData/invokeai:/root/.invokeai
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
     # CasaOS specific configuration for volume and port descriptions
     x-casaos:
       volumes:

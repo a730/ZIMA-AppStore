@@ -2,7 +2,7 @@ name: hermes-web-ui
 services:
   hermes-webui:
     container_name: HermesWebUI
-    image: ghcr.io/a730/hermes-web-ui:latest
+    image: ghcr.io/a730/hermes-web-ui:v1.0.0
     ports:
       - "6060:6060"
     environment:
@@ -25,8 +25,6 @@ services:
       retries: 3
       start_period: 30s
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
     stdin_open: true
     tty: true
     x-casaos:

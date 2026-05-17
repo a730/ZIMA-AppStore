@@ -2,7 +2,7 @@ name: mission-control
 services:
   mission-control:
     container_name: MissionControl
-    image: ghcr.io/builderz-labs/mission-control:latest
+    image: ghcr.io/builderz-labs/mission-control:v2.0.1
     ports:
       - "3000:3000"
     environment:
@@ -24,8 +24,6 @@ services:
       retries: 3
       start_period: 30s
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
     x-casaos:
       envs:
         - container: MC_AUTH_PASS

@@ -4,7 +4,7 @@ services:
   # ─── SwarmClaw — AI agent runtime ───
   swarmclaw:
     container_name: SwarmClaw
-    image: ghcr.io/swarmclawai/swarmclaw:latest
+    image: ghcr.io/swarmclawai/swarmclaw:v1.9.31
     ports:
       - "3456:3456"
       - "3457:3457"
@@ -24,17 +24,6 @@ services:
       retries: 3
       start_period: 30s
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - DAC_OVERRIDE
-      - NET_BIND_SERVICE
-      - FOWNER
-    networks:
-      - swarm-control-net
 
   # ─── Ollama — local LLM provider sidecar ───
   ollama:
@@ -53,8 +42,6 @@ services:
       retries: 3
       start_period: 40s
     restart: unless-stopped
-    networks:
-      - swarm-control-net
     deploy:
       resources:
         limits:
@@ -105,22 +92,11 @@ services:
       retries: 5
       start_period: 15s
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - DAC_OVERRIDE
-      - NET_BIND_SERVICE
-      - FOWNER
-    networks:
-      - swarm-control-net
 
   # ─── Mission Control — agent orchestration dashboard ───
   swarmcontrol:
     container_name: swarmcontrol
-    image: ghcr.io/builderz-labs/mission-control:latest
+    image: ghcr.io/builderz-labs/mission-control:v2.0.1
     ports:
       - "3000:3000"
     environment:
@@ -160,17 +136,6 @@ services:
     volumes:
       - /DATA/AppData/swarm-control/mc-data:/app/.data
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - DAC_OVERRIDE
-      - NET_BIND_SERVICE
-      - FOWNER
-    networks:
-      - swarm-control-net
     x-casaos:
       envs:
         # ── LLM Provider API Keys ──
@@ -289,10 +254,6 @@ services:
         - container: /DATA/AppData/swarm-control/swarmclaw-data
           description:
             en_us: SwarmClaw agent data, memory, and configuration
-
-networks:
-  swarm-control-net:
-    driver: bridge
 
 x-casaos:
   architectures:

@@ -15,16 +15,9 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    volumes:
-      - /DATA/AppData/open-terminal/config:/config
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
     x-casaos:
-      volumes:
-        - container: /config
-          description:
-            en_us: Open Terminal configuration and session data
+      volumes: []
 x-casaos:
   architectures:
     - amd64

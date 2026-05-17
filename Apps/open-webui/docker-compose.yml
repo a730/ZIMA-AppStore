@@ -2,7 +2,7 @@ name: open-webui
 services:
   open-webui:
     container_name: open-webui
-    image: ghcr.io/open-webui/open-webui:latest
+    image: ghcr.io/open-webui/open-webui:main
     ports:
       - "3009:8080"
     labels:
@@ -15,16 +15,9 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    volumes:
-      - /DATA/AppData/open-webui/data:/app/backend/data
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
     x-casaos:
-      volumes:
-        - container: /app/backend/data
-          description:
-            en_us: Open WebUI data (chat history, configs, uploads)
+      volumes: []
 x-casaos:
   architectures:
     - amd64

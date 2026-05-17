@@ -2,7 +2,7 @@ name: romm
 services:
   romm:
     container_name: romm
-    image: rommapp/romm:latest
+    image: rommapp/romm:4.8.1
     ports:
       - "8083:8080"
     labels:
@@ -16,70 +16,21 @@ services:
       retries: 3
       start_period: 40s
     restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_started
-      cache:
-        condition: service_started
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - DAC_OVERRIDE
-      - NET_BIND_SERVICE
-      - FOWNER
-    networks:
-      - romm-net
-    volumes:
-      - /DATA/AppData/romm/library:/romm/library
-      - /DATA/AppData/romm/resources:/romm/resources
     x-casaos:
-      volumes:
-        - container: /romm/library
-          description:
-            en_us: ROM library directory
-        - container: /romm/resources
-          description:
-            en_us: ROM metadata and resources
+      volumes: []
   db:
     image: mariadb:10.11
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${ROMM_DB_ROOT_PASSWORD:-root}
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: romm
-    volumes:
-      - /DATA/AppData/romm/db:/var/lib/mysql
-    networks:
-      - romm-net
     x-casaos:
-      envs:
-        - container: ROMM_DB_ROOT_PASSWORD
-          description:
-            en_us: MariaDB root password for RomM
-          default: root
-      volumes:
-        - container: /var/lib/mysql
-          description:
-            en_us: MariaDB database data
+      volumes: []
   cache:
     image: valkey/valkey:8.1.7
     restart: unless-stopped
-    volumes:
-      - /DATA/AppData/romm/cache:/data
-    networks:
-      - romm-net
     x-casaos:
-      volumes:
-        - container: /data
-          description:
-            en_us: Valkey cache data
-
-networks:
-  romm-net:
-    driver: bridge
-
+      volumes: []
 x-casaos:
   architectures:
     - amd64
