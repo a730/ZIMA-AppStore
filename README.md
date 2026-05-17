@@ -2,6 +2,10 @@
 
 Your go-to App Store for CasaOS and ZimaOS devices like the [ZimaCube Pro](https://www.zimaboard.com/zimacube-pro), featuring 28 apps spanning Generative AI, agent platforms, productivity, development, and more.
 
+## Disclaimer
+
+Apps listed here are third-party software. This store provides Docker Compose configurations — container images are hosted and maintained by their respective upstream projects. This software is distributed under the Apache 2.0 license and is provided "AS IS" without warranty of any kind. Review each app's `SECURITY.md` and `compliance.yaml` before use.
+
 ## Security & Compliance
 
 This store is designed to meet European regulatory standards (GDPR, NIS2, CRA, EU AI Act) with a comprehensive security posture:
