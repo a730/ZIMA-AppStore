@@ -45,18 +45,6 @@ We will not pursue legal action against security researchers who:
 
 This safe harbor applies to all researchers operating within the EU/EEA, Norway, Switzerland, and the United Kingdom, in accordance with relevant safe harbor frameworks including GDPR Article 33 (breach notification) and NIS2 Article 31 (coordinated disclosure).
 
-## Coordinated Disclosure
-
-We follow a **90-day disclosure timeline**:
-
-1. **Report received**: Triage within 5 business days
-2. **Investigation**: Confirm and assess severity within 15 business days
-3. **Fix development**: Develop and test fix within 60 days
-4. **Release**: Patch deployed within 90 days
-5. **Public disclosure**: After patch is available, or after 90 days
-
-If a fix cannot be developed within 90 days, we will communicate an updated timeline.
-
 ## Regulatory Context
 
 This policy is designed to align with European and Nordic regulatory frameworks:
