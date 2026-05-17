@@ -2,7 +2,7 @@ name: cncjs
 services:
   cncjs:
     container_name: CNCjs
-    image: cncjs/cncjs:v1.11.1
+    image: cncjs/cncjs:latest
     ports:
       - "8005:8000"
     volumes:
@@ -15,6 +15,8 @@ services:
       retries: 3
       start_period: 30s
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
     # CasaOS specific configuration for volume and port descriptions

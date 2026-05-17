@@ -4,41 +4,26 @@ services:
     container_name: zerodotemail
     image: darweb/zerodotmail:latest
     restart: unless-stopped
-    ports:
-      - "3008:3000"
-    environment:
-      WEBUI_PORT: 3000
-      NEXT_PUBLIC_APP_URL: http://<your-ip>:3000
-      DATABASE_URL: postgresql://postgres:postgres@<your-ip>:5432/zerodotemail
-      BETTER_AUTH_SECRET: my-better-auth-secret
-      BETTER_AUTH_URL: http://1<your-ip>:3000
-      BETTER_AUTH_TRUSTED_ORIGINS: http://<your-ip>:3000
-      GOOGLE_CLIENT_ID: your-google-client-id
-      GOOGLE_CLIENT_SECRET: your-google-client-secret
-      REDIS_URL: http://<your-ip>:8079
-      REDIS_TOKEN: upstash-local-token
-      RESEND_API_KEY: your-resend-api-key
-      OPENAI_API_KEY: ""
-      DEFAULT_AI_PROVIDER: # ollama
-      DEFAULT_AI_MODEL: # f.e installed model: gemma3:12b
-      OLLAMA_BASE_URL: http://<your-ip>:11434/api
-      OLLAMA_TOKEN: ""
-      AI_SYSTEM_PROMPT: ""
-      GROQ_API_KEY: ""
-      GOOGLE_GENERATIVE_AI_API_KEY: ""
-    labels:
-      - "casaos.port=3008"
-      - "casaos.protocol=http"
-      - "casaos.entrypoint=/"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
     depends_on:
       - db
       - valkey
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - NET_BIND_SERVICE
+      - FOWNER
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3008"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - zerodotemail-net
     volumes:
       - /DATA/AppData/ZeroDotEmail/config:/app/config
     x-casaos:
@@ -84,20 +69,44 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${ZERODOTEMAIL_DB_PASSWORD:-postgres}
       POSTGRES_DB: zerodotemail
       PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      - zerodotemail-net
     volumes:
       - /DATA/AppData/ZeroDotEmail/postgres-data:/var/lib/postgresql/data
+    x-casaos:
+      envs:
+        - container: ZERODOTEMAIL_DB_PASSWORD
+          description:
+            en_us: PostgreSQL password for ZeroDotEmail
+          default: postgres
+      volumes:
+        - container: /var/lib/postgresql/data
+          description:
+            en_us: PostgreSQL data directory
   valkey:
     container_name: zerodotemail-redis
     image: bitnami/valkey:8.0
     restart: unless-stopped
     environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
+      ALLOW_EMPTY_PASSWORD: "${ZERODOTEMAIL_ALLOW_EMPTY_PASSWORD:-yes}"
       VALKEY_DISABLE_COMMANDS: FLUSHDB,FLUSHALL
     volumes:
       - /DATA/AppData/ZeroDotEmail/valkey-data:/bitnami/valkey/data
+    networks:
+      - zerodotemail-net
+    x-casaos:
+      envs:
+        - container: ZERODOTEMAIL_ALLOW_EMPTY_PASSWORD
+          description:
+            en_us: Allow empty Valkey password (yes/no)
+          default: "yes"
+      volumes:
+        - container: /bitnami/valkey/data
+          description:
+            en_us: Valkey data directory
   upstash-proxy:
     container_name: zerodotemail-upstash-proxy
     image: hiett/serverless-redis-http:0.0.10
@@ -106,8 +115,15 @@ services:
       SRH_MODE: env
       SRH_TOKEN: upstash-local-token
       SRH_CONNECTION_STRING: redis://valkey:6379
+    networks:
+      - zerodotemail-net
     ports:
       - "8079:80"
+
+networks:
+  zerodotemail-net:
+    driver: bridge
+
 x-casaos:
   architectures:
     - amd64

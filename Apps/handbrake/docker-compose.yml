@@ -3,7 +3,7 @@ name: handbrake
 services:
   handbrake:
     container_name: HandBrake
-    image: lscr.io/linuxserver/handbrake:1.11.1-ls25
+    image: lscr.io/linuxserver/handbrake:latest
     ports:
       - "3007:3000"
     environment:
@@ -25,6 +25,8 @@ services:
       retries: 3
       start_period: 30s
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     x-casaos:
       envs:
         - container: TZ

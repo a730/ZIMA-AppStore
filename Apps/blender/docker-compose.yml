@@ -1,8 +1,10 @@
 name: linuxserver-blender
 services:
   app:
-    image: linuxserver/blender:5.1.1-ls223
+    image: linuxserver/blender:latest
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     environment:
       PUID: $PUID
       PGID: $PGID

@@ -15,9 +15,16 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    volumes:
+      - /DATA/AppData/onedev/data:/opt/onedev
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     x-casaos:
-      volumes: []
+      volumes:
+        - container: /opt/onedev
+          description:
+            en_us: OneDev data (repositories, CI/CD configs, issues)
 x-casaos:
   architectures:
     - amd64

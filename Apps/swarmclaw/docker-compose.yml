@@ -2,7 +2,7 @@ name: swarmclaw
 services:
   swarmclaw:
     container_name: SwarmClaw
-    image: ghcr.io/swarmclawai/swarmclaw:v1.9.31
+    image: ghcr.io/swarmclawai/swarmclaw:latest
     ports:
       - "3456:3456"
       - "3457:3457"
@@ -21,6 +21,8 @@ services:
       retries: 3
       start_period: 30s
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     x-casaos:
       envs:
         - container: SWARMCLAW_ACCESS_KEY
