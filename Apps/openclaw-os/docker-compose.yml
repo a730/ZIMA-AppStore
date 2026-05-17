@@ -1,0 +1,69 @@
+name: openclaw-os
+services:
+  openclaw-os:
+    container_name: openclaw-os
+    image: ghcr.io/a730/openclaw-os:latest
+    ports:
+      - "18789:18789"
+    labels:
+      - "casaos.port=18789"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/plugins/openclawos"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    cap_drop:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /DATA/AppData/openclaw-os:/home/node/.openclaw
+    restart: unless-stopped
+    command:
+      [
+        "node",
+        "dist/index.js",
+        "gateway",
+        "--bind",
+        "lan",
+        "--port",
+        "18789",
+        "--allow-unconfigured",
+      ]
+    x-casaos:
+      volumes:
+        - container: /home/node/.openclaw
+          description:
+            en_us: OpenClaw configuration, workspace, and plugin data
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: openclaw-os
+  description:
+    en_us: OpenClaw OS is an all-in-one AI assistant workspace combining the OpenClaw gateway with a generative UI workspace. Chat via Telegram, Discord, Slack, WhatsApp, and more — or use the built-in workspace at /plugins/openclawos for interactive agent dashboards, apps, and artifacts.
+  tagline:
+    en_us: All-in-one AI assistant with generative workspace
+  developer: thesysdev
+  author: ZIMA
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/openclaw-os/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/openclaw-os/thumbnail.png
+  title:
+    en_us: OpenClaw OS
+  category: Agent Platforms
+  port_map: "18789"
+  scheme: http
+  index: /plugins/openclawos
+  tips:
+    before_install:
+      en_us: |
+        OpenClaw OS bundles the OpenClaw AI assistant gateway with the OpenClaw-OS generative UI workspace.
+        After installation, access the workspace at http://<your-zima-ip>:18789/plugins/openclawos.
+        Configure model API keys by editing openclaw.json in your app data directory.
+        Supported channels: Telegram, Discord, Slack, WhatsApp, Signal, iMessage, and more.
