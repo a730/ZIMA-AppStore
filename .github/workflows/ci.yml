@@ -43,7 +43,7 @@ jobs:
         run: npm test
 
       - name: Run security hardening tests
-        run: npx jest Apps/__tests__/security.test.js --verbose
+        run: npx jest tests/security.test.js --verbose
 
   security-scan:
     runs-on: ubuntu-latest

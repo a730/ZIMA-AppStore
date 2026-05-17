@@ -2,12 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('yaml');
 
-const APPS_DIR = path.join(__dirname, '..');
+const APPS_DIR = path.join(__dirname, '..', 'Apps');
 
 function getAppDirs() {
   return fs.readdirSync(APPS_DIR)
-    .filter(f => fs.statSync(path.join(APPS_DIR, f)).isDirectory())
-    .filter(f => f !== '__tests__');
+    .filter(f => fs.statSync(path.join(APPS_DIR, f)).isDirectory());
 }
 
 function readCompose(appDir) {
