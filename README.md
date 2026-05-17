@@ -11,7 +11,7 @@ This store is designed to meet European regulatory standards (GDPR, NIS2, CRA, E
 Security researchers can report vulnerabilities via **GitHub Private Vulnerability Reporting**:
 [https://github.com/a730/ZIMA-AppStore/security/advisories/new](https://github.com/a730/ZIMA-AppStore/security/advisories/new)
 
-Includes **safe harbor** for researchers in EU/EEA/Norway/Switzerland and a **90-day coordinated disclosure** timeline. See [SECURITY.md](SECURITY.md) for the full policy.
+Includes **safe harbor** for researchers in EU/EEA/Norway/Switzerland. See [SECURITY.md](SECURITY.md) for the full policy.
 
 ### Automated CI Checks
 
