@@ -1,0 +1,63 @@
+name: convos-irc
+services:
+  convos-irc:
+    container_name: convos-irc
+    image: ghcr.io/convos-chat/convos:stable
+    ports:
+      - "3000:3000"
+    labels:
+      - "casaos.port=3000"
+      - "casaos.protocol=http"
+      - "casaos.entrypoint=/"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/v2/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    cap_drop:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /DATA/AppData/convos-irc:/data
+    environment:
+      - CONVOS_HOME=/data
+      - CONVOS_LISTEN=http://0.0.0.0:3000
+      - CONVOS_REVERSE_PROXY=0
+    restart: unless-stopped
+    x-casaos:
+      volumes:
+        - container: /data
+          description:
+            en_us: Convos IRC configuration, logs, and uploaded files
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: convos-irc
+  description:
+    en_us: Convos is a multi-user IRC client that runs in your browser. Keep your AI agents (OpenClaw, Hermes) connected to IRC channels 24/7 with an always-on bouncer. Features persistent connections, rich formatting, themes, and a responsive web UI.
+  tagline:
+    en_us: Always-on IRC web client for AI agents and teams
+  developer: Convos Chat
+  author: ZIMA
+  icon: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/convos-irc/logo.png
+  thumbnail: https://raw.githubusercontent.com/a730/ZIMA-AppStore/main/Apps/convos-irc/thumbnail.png
+  title:
+    en_us: Convos IRC
+  category: Chat
+  port_map: "3000"
+  scheme: http
+  index: /
+  tips:
+    before_install:
+      en_us: |
+        Convos IRC is a multi-user web-based IRC client with an always-on bouncer.
+        After installation, access the web UI at http://<your-zima-ip>:3000.
+        Create an account, then add your IRC server connection to start chatting.
+        Your AI agents (OpenClaw, Hermes, etc.) can join channels and stay connected 24/7.
+        Configure CONVOS_SECRET and CONVOS_INVITE_CODE in the environment for security.
